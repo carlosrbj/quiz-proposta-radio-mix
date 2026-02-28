@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quiz Interativo — Proposta Rádio Mix FM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET & VARIABLES
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+button, label, a, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg-deep: #08080f;
+  --bg-surface: #0f0f1a;
+  --bg-card: #141422;
+  --bg-card-alt: #1a1a2e;
+  --bg-input: #12121f;
+  --accent: #e94560;
+  --accent-glow: rgba(233,69,96,0.15);
+  --blue: #0f3460;
+  --blue-light: #1a5276;
+  --cyan: #00d2ff;
+  --gold: #f5a623;
+  --green: #00e676;
+  --purple: #a855f7;
+  --text: #eeeef5;
+  --text-secondary: #9898b0;
+  --text-dim: #5a5a78;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   AMBIENT BACKGROUND
+   ═══════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(233,69,96,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(15,52,96,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,210,255,0.03) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   STICKY NAV
+   ═══════════════════════════════════════════ */
+.top-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(8,8,15,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: env(safe-area-inset-top, 0) 16px 0;
+  transition: var(--transition);
+}
+
+.top-nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  gap: 6px;
+}
+
+.nav-brand {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--accent);
+  letter-spacing: -0.3px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+
+.nav-links a {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+  border-color: var(--border);
+}
+
+.nav-links a.active { color: var(--accent); border-color: rgba(233,69,96,0.25); }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+section {
+  padding-top: 76px;
+  padding-bottom: 32px;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  text-align: center;
+  padding: 120px 16px 50px;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border: 1px solid rgba(0,210,255,0.25);
+  padding: 5px 16px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.7s ease-out;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 18px;
+  animation: fadeUp 0.7s ease-out 0.1s both;
+}
+
+.hero h1 .hl { color: var(--accent); }
+
+.hero p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin: 0 auto;
+  animation: fadeUp 0.7s ease-out 0.2s both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADERS
+   ═══════════════════════════════════════════ */
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin-bottom: 12px;
+}
+
+.section-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ MODEL CARDS (Section 4)
+   ═══════════════════════════════════════════ */
+.model-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.model-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.model-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.model-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+.model-card:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+.model-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), #f7dc6f); }
+.model-card:nth-child(4)::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.model-card:nth-child(5)::before { background: linear-gradient(90deg, var(--purple), var(--accent)); }
+
+.model-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.model-card .mc-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+
+.model-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.model-card .mc-ideal {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.model-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+
+.model-card .mc-example {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* STANDARD FLOW */
+.flow-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-top: 28px;
+}
+
+.flow-box h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: -0.3px;
+}
+
+.flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.flow-step .fs-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ DEMOS (Section 5)
+   ═══════════════════════════════════════════ */
+.quiz-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.quiz-tab {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--text-dim);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.quiz-tab:hover { border-color: var(--text-secondary); color: var(--text); transform: translateY(-2px); }
+.quiz-tab.active { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+
+/* Quiz Card */
+.qcard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.qcard-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.qcard-header::before {
+  content: ''; position: absolute; inset: 0; opacity: 0.06;
+}
+
+.qcard-header .qi { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+.qcard-header h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 4px; }
+.qcard-header p { font-size: 0.82rem; color: var(--text-secondary); }
+
+.progress-wrap { padding: 16px 16px 0; display: flex; align-items: center; gap: 10px; }
+.progress-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 100px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+.progress-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
+
+.q-area { padding: 20px 16px 24px; }
+.q-text { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 18px; }
+
+/* Options */
+.opts { display: flex; flex-direction: column; gap: 8px; }
+
+.opt-btn {
+  font-family: 'DM Sans', sans-serif;
+  width: 100%; text-align: left;
+  padding: 14px 18px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: rgba(255,255,255,0.015);
+  color: var(--text); font-size: 0.9rem; cursor: pointer;
+  transition: var(--transition); display: flex; align-items: center; gap: 12px;
+}
+
+.opt-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.04); transform: translateX(3px); }
+
+.opt-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.1);
+  transition: var(--transition);
+}
+
+.opt-btn.selected { border-color: var(--accent); background: var(--accent-glow); }
+.opt-btn.selected .opt-letter { background: var(--accent); border-color: var(--accent); color: #fff; }
+.opt-btn.correct { border-color: var(--green); background: rgba(0,230,118,0.08); }
+.opt-btn.correct .opt-letter { background: var(--green); border-color: var(--green); color: var(--bg-deep); }
+.opt-btn.wrong { border-color: var(--accent); background: rgba(233,69,96,0.06); }
+
+/* Scale */
+.scale-wrap { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+.scale-btn {
+  font-family: 'JetBrains Mono', monospace;
+  width: 48px; height: 48px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: rgba(255,255,255,0.015);
+  color: var(--text-dim); font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.scale-btn:hover { border-color: var(--border-hover); transform: translateY(-3px); color: var(--text); }
+.scale-btn.selected { border-color: var(--cyan); background: rgba(0,210,255,0.1); color: var(--cyan); box-shadow: 0 0 14px rgba(0,210,255,0.15); transform: translateY(-3px); }
+
+.scale-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.7rem; color: var(--text-dim); }
+
+/* Image Options */
+.img-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.img-opt-btn {
+  font-family: 'DM Sans', sans-serif;
+  border: 2px solid var(--border); border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.015); cursor: pointer;
+  transition: var(--transition); overflow: hidden; text-align: center; color: var(--text); padding: 0;
+}
+
+.img-opt-btn .io-icon { width: 100%; height: 76px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+.img-opt-btn .io-label { padding: 10px 6px; font-size: 0.82rem; font-weight: 600; }
+.img-opt-btn:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+.img-opt-btn.selected { border-color: var(--gold); background: rgba(245,166,35,0.06); }
+
+/* Roulette */
+.roulette-box { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0; }
+.roulette-pointer { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid var(--accent); filter: drop-shadow(0 2px 5px rgba(233,69,96,0.4)); }
+
+.roulette-wheel {
+  width: 200px; height: 200px; border-radius: 50%; position: relative;
+  border: 3px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 30px rgba(233,69,96,0.1), inset 0 0 20px rgba(0,0,0,0.4);
+  overflow: hidden; transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99);
+}
+
+.roulette-wheel .seg {
+  position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.spin-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700;
+  padding: 12px 36px; border-radius: 100px; border: none;
+  background: linear-gradient(135deg, var(--accent), #c0392b); color: #fff;
+  cursor: pointer; transition: var(--transition); box-shadow: 0 4px 18px rgba(233,69,96,0.25);
+}
+
+.spin-btn:hover { transform: translateY(-2px) scale(1.03); }
+.spin-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.prize-popup { display: none; text-align: center; padding: 20px 0; animation: prizeIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.prize-popup.show { display: block; }
+
+@keyframes prizeIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+
+.prize-popup .pe { font-size: 3.5rem; display: block; margin-bottom: 8px; }
+.prize-popup .pt { font-size: 1.2rem; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
+.prize-popup .pd { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* Match circle */
+.match-result { text-align: center; padding: 16px 0; }
+
+.match-circle {
+  width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; font-weight: 900; border: 4px solid;
+}
+
+.match-label { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.match-desc { font-size: 0.85rem; color: var(--text-secondary); max-width: 400px; margin: 0 auto; }
+
+/* Score badge */
+.score-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--cyan); background: rgba(0,210,255,0.08);
+  border: 1px solid rgba(0,210,255,0.18); padding: 3px 12px;
+  border-radius: 100px; display: inline-block;
+}
+
+/* Quiz nav buttons */
+.q-nav { padding: 0 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+
+.btn-n, .btn-p {
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  padding: 10px 24px; border-radius: 100px; border: none; cursor: pointer; transition: var(--transition);
+}
+
+.btn-n { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(233,69,96,0.2); }
+.btn-n:hover { transform: translateY(-2px); }
+.btn-n:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-p { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+.btn-p:hover { color: var(--text); border-color: var(--border-hover); }
+
+/* Result screen */
+.result-scr { text-align: center; padding: 36px 16px; display: none; }
+.result-scr.show { display: block; }
+.result-scr .re { font-size: 3.2rem; display: block; margin-bottom: 12px; }
+.result-scr .rt { font-size: 1.35rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.4px; }
+.result-scr .rd { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; max-width: 400px; margin: 0 auto 20px; }
+
+.btn-restart {
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+  padding: 8px 24px; border-radius: 100px;
+  border: 1.5px solid var(--accent); background: transparent;
+  color: var(--accent); cursor: pointer; transition: var(--transition);
+}
+
+.btn-restart:hover { background: var(--accent-glow); }
+
+/* Theme accents */
+[data-theme="perfil"] .progress-fill { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+[data-theme="perfil"] .qcard-header::before { background: linear-gradient(135deg, var(--accent), var(--purple)); }
+[data-theme="trivia"] .progress-fill { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+[data-theme="trivia"] .qcard-header::before { background: linear-gradient(135deg, var(--cyan), var(--blue-light)); }
+[data-theme="trivia"] .opt-btn.selected { border-color: var(--cyan); background: rgba(0,210,255,0.06); }
+[data-theme="trivia"] .opt-btn.selected .opt-letter { background: var(--cyan); border-color: var(--cyan); color: var(--bg-deep); }
+[data-theme="preferencia"] .progress-fill { background: linear-gradient(90deg, var(--gold), #f7dc6f); }
+[data-theme="preferencia"] .qcard-header::before { background: linear-gradient(135deg, var(--gold), #f7dc6f); }
+[data-theme="roleta"] .progress-fill { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+[data-theme="roleta"] .qcard-header::before { background: linear-gradient(135deg, var(--green), var(--cyan)); }
+[data-theme="roleta"] .opt-btn.selected { border-color: var(--green); background: rgba(0,230,118,0.06); }
+[data-theme="roleta"] .opt-btn.selected .opt-letter { background: var(--green); border-color: var(--green); color: var(--bg-deep); }
+[data-theme="match"] .progress-fill { background: linear-gradient(90deg, var(--purple), var(--accent)); }
+[data-theme="match"] .qcard-header::before { background: linear-gradient(135deg, var(--purple), var(--accent)); }
+[data-theme="match"] .opt-btn.selected { border-color: var(--purple); background: rgba(168,85,247,0.06); }
+[data-theme="match"] .opt-btn.selected .opt-letter { background: var(--purple); border-color: var(--purple); }
+
+/* ═══════════════════════════════════════════
+   FORM STYLES (Section 7 + Blank Quiz)
+   ═══════════════════════════════════════════ */
+.form-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px; display: block;
+}
+
+.form-section-title {
+  font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.3px;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.form-group label .fq-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  background: var(--accent);
+  color: #fff; padding: 2px 7px; border-radius: 4px;
+  margin-right: 8px;
+}
+
+.form-group label .required { color: var(--accent); margin-left: 3px; }
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  font-size: 16px; /* Prevents iOS zoom on focus */
+  transition: var(--transition);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+textarea { resize: vertical; min-height: 80px; }
+
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239898b0' fill='none' stroke-width='2'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+select option { background: var(--bg-card); color: var(--text); }
+
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.check-label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: 12px;
+  border: 1.5px solid var(--border); background: transparent;
+  font-size: 0.88rem; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 48px;
+}
+
+.check-label:hover { border-color: var(--border-hover); color: var(--text); }
+.check-label input[type="checkbox"] { 
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; 
+}
+.check-label:has(input:checked) { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+
+.check-label .ck-box {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 1.5px solid var(--border); display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  transition: var(--transition); font-size: 10px; color: transparent;
+}
+
+.check-label:has(input:checked) .ck-box { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+
+.radio-label {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: transparent;
+  font-size: 0.9rem; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  min-height: 50px;
+}
+
+.radio-label:hover { border-color: var(--border-hover); color: var(--text); }
+.radio-label input[type="radio"] { 
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; 
+}
+.radio-label:has(input:checked) { border-color: var(--accent); background: var(--accent-glow); color: var(--text); }
+
+.radio-label .rd-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--text-dim); flex-shrink: 0;
+  transition: var(--transition); position: relative;
+}
+
+.radio-label:has(input:checked) .rd-dot {
+  border-color: var(--accent);
+  background: radial-gradient(circle, var(--accent) 35%, transparent 40%);
+}
+
+/* Form card */
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-bottom: 20px;
+}
+
+/* ═══════════════════════════════════════════
+   BLANK QUIZ BUILDER
+   ═══════════════════════════════════════════ */
+.quiz-builder-q {
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.qb-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.qb-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  color: var(--purple); background: rgba(168,85,247,0.1);
+  border: 1px solid rgba(168,85,247,0.2);
+  padding: 3px 10px; border-radius: 100px;
+}
+
+.qb-remove {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem; color: var(--text-dim);
+  background: transparent; border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 100px; cursor: pointer;
+  transition: var(--transition);
+}
+
+.qb-remove:hover { border-color: var(--accent); color: var(--accent); }
+
+.qb-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+
+.qb-opt-row { display: flex; gap: 8px; align-items: center; }
+
+.qb-opt-row .qb-opt-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  width: 24px; height: 24px; border-radius: 6px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); flex-shrink: 0;
+}
+
+.qb-opt-row input { flex: 1; padding: 8px 12px; font-size: 0.82rem; }
+
+.btn-add-opt, .btn-add-q {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem; font-weight: 600;
+  padding: 6px 16px; border-radius: 100px;
+  border: 1px dashed var(--border); background: transparent;
+  color: var(--text-dim); cursor: pointer; transition: var(--transition);
+  margin-top: 8px;
+}
+
+.btn-add-opt:hover, .btn-add-q:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+
+.btn-add-q {
+  width: 100%; padding: 14px; font-size: 0.88rem;
+  margin-top: 0; border-style: dashed; border-radius: var(--radius-sm);
+}
+
+/* ═══════════════════════════════════════════
+   SUBMIT SECTION
+   ═══════════════════════════════════════════ */
+.submit-section {
+  text-align: center;
+  padding: 50px 0 80px;
+}
+
+.btn-submit {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 700;
+  padding: 16px 36px; border-radius: 100px;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), #c0392b);
+  color: #fff; transition: var(--transition);
+  box-shadow: 0 6px 28px rgba(233,69,96,0.3);
+  position: relative; overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+}
+
+.btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 40px rgba(233,69,96,0.4); }
+.btn-submit:active { transform: translateY(-1px); }
+
+.btn-submit::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0; transition: var(--transition);
+}
+
+.btn-submit:hover::after { opacity: 1; }
+
+.submit-note {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 14px;
+}
+
+/* Success toast */
+.toast {
+  position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--green); color: var(--bg-deep);
+  padding: 14px 30px; border-radius: 100px;
+  font-weight: 700; font-size: 0.9rem;
+  box-shadow: 0 8px 30px rgba(0,230,118,0.3);
+  z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════
+   CONFETTI
+   ═══════════════════════════════════════════ */
+.confetti-box { position: fixed; inset: 0; pointer-events: none; z-index: 998; }
+
+.confetti-p {
+  position: absolute; width: 8px; height: 8px; top: -10px;
+  border-radius: 2px; animation: cfall linear forwards;
+}
+
+@keyframes cfall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════
+   TABLET & DESKTOP (640px+)
+   ═══════════════════════════════════════════ */
+@media (min-width: 640px) {
+  .container { padding: 0 24px; }
+  section { padding-top: 100px; padding-bottom: 40px; }
+  .hero { padding: 140px 24px 70px; }
+  .hero h1 { font-size: clamp(2.4rem, 5.5vw, 3.8rem); }
+
+  .top-nav-inner { flex-wrap: nowrap; height: 60px; padding: 0; gap: 0; }
+  .nav-links { width: auto; gap: 6px; }
+  .nav-links a { font-size: 0.78rem; padding: 6px 14px; }
+
+  .form-card { padding: 28px 32px; }
+  .qcard-header { padding: 24px 28px 18px; }
+  .q-area { padding: 24px 28px 28px; }
+  .q-nav { padding: 0 28px 24px; }
+  .progress-wrap { padding: 18px 28px 0; }
+  .model-card { padding: 28px; }
+
+  .checkbox-group { gap: 8px; }
+  .check-label { padding: 12px 16px; font-size: 0.88rem; }
+  .radio-label { padding: 14px 18px; }
+
+  .img-opts { gap: 10px; }
+  .img-opt-btn .io-icon { height: 90px; font-size: 2.4rem; }
+  .scale-btn { width: 52px; height: 52px; }
+  .roulette-wheel { width: 240px; height: 240px; }
+
+  .quiz-tabs { gap: 8px; }
+  .quiz-tab { font-size: 0.8rem; padding: 8px 18px; }
+
+  .btn-submit { width: auto; font-size: 1.05rem; padding: 16px 52px; }
+
+  .quiz-builder-q { padding: 20px; }
+  .qb-opt-row input { font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <div class="nav-brand">QuizLead — Mix FM</div>
+    <ul class="nav-links">
+      <li><a href="#modelos" class="active">Modelos</a></li>
+      <li><a href="#demos">Demos</a></li>
+      <li><a href="#briefing">Briefing</a></li>
+      <li><a href="#quiz-modelo">Quiz Modelo</a></li>
+      <li><a href="#enviar">Enviar</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero-badge">Proposta de Projeto</div>
+  <h1>Quiz <span class="hl">Interativo</span> para<br>Coleta de Leads</h1>
+  <p>Conheça os modelos disponíveis, teste as demos e preencha o formulário inicial para darmos início ao seu projeto.</p>
+</header>
+
+<!-- ═══════════════════════════════════════
+     SECTION 4 — MODELOS DE QUIZ
+     ═══════════════════════════════════════ -->
+<section id="modelos">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">Seção 01</span>
+      <h2 class="section-title">Sugestões de Modelos de Quiz</h2>
+      <p class="section-desc">Cinco formatos reutilizáveis e personalizáveis. Cada modelo pode ser adaptado para diferentes empresas e eventos, alterando apenas o conteúdo e o visual.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <span class="mc-icon">🎯</span>
+        <h3>Quiz de Perfil (Recomendação)</h3>
+        <span class="mc-ideal">Ideal para: concessionárias, imobiliárias, planos de saúde, seguradoras</span>
+        <p>5 a 8 perguntas que traçam o perfil do lead e, no final, recomendam um produto ou serviço. Alta percepção de valor — o participante sente que ganhou algo personalizado.</p>
+        <div class="mc-example">💡 Exemplo: "Descubra qual carro combina com você!" — perguntas sobre estilo de vida, família, prioridades → recomendação de modelo + coleta de dados.</div>
+      </div>
+
+      <div class="model-card">
+        <span class="mc-icon">🧠</span>
+        <h3>Quiz de Conhecimento / Trivia</h3>
+        <span class="mc-ideal">Ideal para: marcas de bebidas, entretenimento, esportes, tecnologia</span>
+        <p>5 a 10 perguntas divertidas com pontuação e ranking. Engajamento alto por competitividade. Pode ter ranking em tempo real exibido em totem principal.</p>
+        <div class="mc-example">💡 Exemplo: "Quanto você sabe sobre cerveja artesanal?" — perguntas lúdicas + dados de contato para concorrer a prêmios.</div>
+      </div>
+
+      <div class="model-card">
+        <span class="mc-icon">📊</span>
+        <h3>Quiz de Preferências / Pesquisa de Mercado</h3>
+        <span class="mc-ideal">Ideal para: empresas lançando produtos, pesquisa de opinião, varejo</span>
+        <p>4 a 6 perguntas com escalas (1-5) ou escolha de imagens. Duplo benefício: coleta leads E gera dados de mercado valiosos para a empresa.</p>
+        <div class="mc-example">💡 Exemplo: "Qual sabor você prefere?" — teste de produto com feedback instantâneo + dados demográficos.</div>
+      </div>
+
+      <div class="model-card">
+        <span class="mc-icon">🎰</span>
+        <h3>Quiz Gamificado com Roleta / Sorteio</h3>
+        <span class="mc-ideal">Ideal para: qualquer segmento que ofereça brindes ou descontos</span>
+        <p>3 a 4 perguntas rápidas + roleta de prêmios ao final. Altíssima conversão por causa do incentivo imediato. Fila no estande garantida!</p>
+        <div class="mc-example">💡 Exemplo: "Responda e gire a roleta!" — alta conversão, engajamento visual.</div>
+      </div>
+
+      <div class="model-card">
+        <span class="mc-icon">💡</span>
+        <h3>Quiz de Compatibilidade / Match</h3>
+        <span class="mc-ideal">Ideal para: academias, cursos, franquias, apps de serviço</span>
+        <p>Perguntas que calculam um "match score" com o produto/serviço. O participante descobre seu percentual de compatibilidade — gera curiosidade e conexão com a marca.</p>
+        <div class="mc-example">💡 Exemplo: "Qual plano de academia combina com seu estilo de treino?"</div>
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <h3>📋 Estrutura Padrão de Todo Quiz</h3>
+      <div class="flow-steps">
+        <div class="flow-step"><span class="fs-num">1</span> Tela de boas-vindas (branding)</div>
+        <div class="flow-step"><span class="fs-num">2</span> Coleta de dados básicos</div>
+        <div class="flow-step"><span class="fs-num">3</span> Perguntas do quiz (3-10)</div>
+        <div class="flow-step"><span class="fs-num">4</span> Tela de resultado</div>
+        <div class="flow-step"><span class="fs-num">5</span> Agradecimento + CTA</div>
+        <div class="flow-step"><span class="fs-num">6</span> Aceite LGPD (obrigatório)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5 — DEMOS INTERATIVAS
+     ═══════════════════════════════════════ -->
+<section id="demos">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">Seção 02</span>
+      <h2 class="section-title">Demos Interativas</h2>
+      <p class="section-desc">Teste cada modelo de quiz com 3 perguntas de exemplo. Clique nas abas para alternar entre os formatos.</p>
+    </div>
+
+    <div class="quiz-tabs" id="quizTabs">
+      <button class="quiz-tab active" data-qid="perfil">🎯 Perfil</button>
+      <button class="quiz-tab" data-qid="trivia">🧠 Trivia</button>
+      <button class="quiz-tab" data-qid="preferencia">📊 Preferência</button>
+      <button class="quiz-tab" data-qid="roleta">🎰 Roleta</button>
+      <button class="quiz-tab" data-qid="match">💡 Match</button>
+    </div>
+
+    <div id="quizStage"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 7 — FORMULÁRIO DE BRIEFING
+     ═══════════════════════════════════════ -->
+<section id="briefing">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">Seção 03</span>
+      <h2 class="section-title">Formulário de Briefing Inicial</h2>
+      <p class="section-desc">Preencha as informações abaixo para darmos início ao MVP do projeto. Não se preocupe se não souber todas as respostas — podemos alinhar depois.</p>
+    </div>
+
+    <form id="briefingForm" autocomplete="off">
+
+      <!-- SEÇÃO A -->
+      <div class="form-card">
+        <span class="form-section-label">Seção A</span>
+        <h3 class="form-section-title">Sobre os Eventos</h3>
+
+        <div class="form-group">
+          <label><span class="fq-num">A1</span> Com que frequência a rádio realiza eventos com coleta de leads?</label>
+          <div class="radio-group" data-name="a1">
+            <label class="radio-label"><input type="radio" name="a1" value="Semanal"><span class="rd-dot"></span> Semanal</label>
+            <label class="radio-label"><input type="radio" name="a1" value="Quinzenal"><span class="rd-dot"></span> Quinzenal</label>
+            <label class="radio-label"><input type="radio" name="a1" value="Mensal"><span class="rd-dot"></span> Mensal</label>
+            <label class="radio-label"><input type="radio" name="a1" value="Esporádico"><span class="rd-dot"></span> Esporádico</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">A2</span> Quantos eventos estão previstos nos próximos 3 meses?</label>
+          <input type="number" name="a2" placeholder="Ex: 8" min="0">
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">A3</span> Qual o tamanho médio de público por evento?</label>
+          <div class="radio-group" data-name="a3">
+            <label class="radio-label"><input type="radio" name="a3" value="50-100"><span class="rd-dot"></span> 50 a 100 pessoas</label>
+            <label class="radio-label"><input type="radio" name="a3" value="100-300"><span class="rd-dot"></span> 100 a 300 pessoas</label>
+            <label class="radio-label"><input type="radio" name="a3" value="300-500"><span class="rd-dot"></span> 300 a 500 pessoas</label>
+            <label class="radio-label"><input type="radio" name="a3" value="500+"><span class="rd-dot"></span> Mais de 500 pessoas</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">A4</span> Os eventos acontecem em locais com internet disponível? Se sim, é confiável?</label>
+          <textarea name="a4" placeholder="Ex: Alguns locais têm Wi-Fi mas nem sempre funciona bem. Outros não têm nenhuma conexão."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">A5</span> Quantos tablets/totens pretendem usar simultaneamente por evento?</label>
+          <input type="number" name="a5" placeholder="Ex: 4" min="1">
+        </div>
+      </div>
+
+      <!-- SEÇÃO B -->
+      <div class="form-card">
+        <span class="form-section-label">Seção B</span>
+        <h3 class="form-section-title">Sobre as Empresas Parceiras</h3>
+
+        <div class="form-group">
+          <label><span class="fq-num">B1</span> Quantas empresas parceiras ativas vocês têm atualmente?</label>
+          <input type="number" name="b1" placeholder="Ex: 12" min="0">
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">B2</span> Quais são os segmentos mais comuns?</label>
+          <div class="checkbox-group" id="b2Group">
+            <label class="check-label"><input type="checkbox" name="b2" value="Automotivo"><span class="ck-box">✓</span> Automotivo</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Saúde"><span class="ck-box">✓</span> Saúde</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Imobiliário"><span class="ck-box">✓</span> Imobiliário</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Varejo"><span class="ck-box">✓</span> Varejo</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Educação"><span class="ck-box">✓</span> Educação</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Alimentação"><span class="ck-box">✓</span> Alimentação</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Entretenimento"><span class="ck-box">✓</span> Entretenimento</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Tecnologia"><span class="ck-box">✓</span> Tecnologia</label>
+            <label class="check-label"><input type="checkbox" name="b2" value="Financeiro"><span class="ck-box">✓</span> Financeiro</label>
+          </div>
+          <input type="text" name="b2_outro" placeholder="Outro segmento não listado..." style="margin-top:10px">
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">B3</span> Como os leads são entregues hoje para as empresas?</label>
+          <div class="radio-group" data-name="b3">
+            <label class="radio-label"><input type="radio" name="b3" value="Planilha"><span class="rd-dot"></span> Planilha (Excel/Google Sheets)</label>
+            <label class="radio-label"><input type="radio" name="b3" value="Email"><span class="rd-dot"></span> Por email</label>
+            <label class="radio-label"><input type="radio" name="b3" value="Nenhum processo definido"><span class="rd-dot"></span> Nenhum processo definido</label>
+            <label class="radio-label"><input type="radio" name="b3" value="Outro"><span class="rd-dot"></span> Outro</label>
+          </div>
+          <input type="text" name="b3_outro" placeholder="Se marcou 'Outro', descreva..." style="margin-top:10px">
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">B4</span> As empresas precisam acessar seus próprios dados diretamente ou a rádio faz a intermediação? Se sim, de qual forma ela faz essa intermediação hoje?</label>
+          <textarea name="b4" placeholder="Ex: Hoje a rádio coleta em papel e depois monta uma planilha para enviar por email..."></textarea>
+        </div>
+      </div>
+
+      <!-- SEÇÃO C -->
+      <div class="form-card">
+        <span class="form-section-label">Seção C</span>
+        <h3 class="form-section-title">Sobre o Quiz</h3>
+
+        <div class="form-group">
+          <label><span class="fq-num">C1</span> Já utilizaram algum tipo de quiz ou formulário em eventos anteriores? Como foi?</label>
+          <textarea name="c1" placeholder="Descreva a experiência anterior, se houver..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">C2</span> Quais destes formatos de quiz parecem mais interessantes?</label>
+          <div class="checkbox-group" id="c2Group">
+            <label class="check-label"><input type="checkbox" name="c2" value="Perfil"><span class="ck-box">✓</span> 🎯 Quiz de Perfil</label>
+            <label class="check-label"><input type="checkbox" name="c2" value="Trivia"><span class="ck-box">✓</span> 🧠 Trivia / Conhecimento</label>
+            <label class="check-label"><input type="checkbox" name="c2" value="Preferência"><span class="ck-box">✓</span> 📊 Preferências / Pesquisa</label>
+            <label class="check-label"><input type="checkbox" name="c2" value="Roleta"><span class="ck-box">✓</span> 🎰 Roleta de Prêmios</label>
+            <label class="check-label"><input type="checkbox" name="c2" value="Match"><span class="ck-box">✓</span> 💡 Compatibilidade / Match</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">C3</span> O quiz deve ter limite de tempo por pergunta?</label>
+          <div class="radio-group" data-name="c3">
+            <label class="radio-label"><input type="radio" name="c3" value="Sim, 15 segundos"><span class="rd-dot"></span> Sim, 15 segundos por pergunta</label>
+            <label class="radio-label"><input type="radio" name="c3" value="Sim, 30 segundos"><span class="rd-dot"></span> Sim, 30 segundos por pergunta</label>
+            <label class="radio-label"><input type="radio" name="c3" value="Não"><span class="rd-dot"></span> Não, sem limite de tempo</label>
+            <label class="radio-label"><input type="radio" name="c3" value="A decidir"><span class="rd-dot"></span> A decidir depois</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">C4</span> Desejam oferecer prêmios/brindes no final do quiz? Se sim, de que tipo?</label>
+          <textarea name="c4" placeholder="Ex: Cupons de desconto, brindes físicos, sorteios de prêmios maiores..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">C5</span> Quais dados são essenciais para vocês e seus clientes?</label>
+          <div class="checkbox-group" id="c5Group">
+            <label class="check-label"><input type="checkbox" name="c5" value="Nome"><span class="ck-box">✓</span> Nome</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="WhatsApp"><span class="ck-box">✓</span> WhatsApp</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="Email"><span class="ck-box">✓</span> Email</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="CPF"><span class="ck-box">✓</span> CPF</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="Endereço"><span class="ck-box">✓</span> Endereço</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="Faixa etária"><span class="ck-box">✓</span> Faixa etária</label>
+            <label class="check-label"><input type="checkbox" name="c5" value="Profissão"><span class="ck-box">✓</span> Profissão</label>
+          </div>
+          <input type="text" name="c5_outro" placeholder="Outros dados necessários..." style="margin-top:10px">
+        </div>
+      </div>
+
+      <!-- SEÇÃO D -->
+      <div class="form-card">
+        <span class="form-section-label">Seção D</span>
+        <h3 class="form-section-title">Visual e Marca</h3>
+
+        <div class="form-group">
+          <label><span class="fq-num">D1</span> A rádio possui manual de identidade visual? (logo, cores, fontes)</label>
+          <div class="radio-group" data-name="d1">
+            <label class="radio-label"><input type="radio" name="d1" value="Sim"><span class="rd-dot"></span> Sim, temos manual completo</label>
+            <label class="radio-label"><input type="radio" name="d1" value="Parcial"><span class="rd-dot"></span> Temos logo e cores, mas não um manual formal</label>
+            <label class="radio-label"><input type="radio" name="d1" value="Não"><span class="rd-dot"></span> Não temos</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">D2</span> As empresas parceiras fornecerão seus próprios materiais visuais?</label>
+          <div class="radio-group" data-name="d2">
+            <label class="radio-label"><input type="radio" name="d2" value="Sim"><span class="rd-dot"></span> Sim, cada empresa envia logo e cores</label>
+            <label class="radio-label"><input type="radio" name="d2" value="Algumas"><span class="rd-dot"></span> Algumas sim, outras não</label>
+            <label class="radio-label"><input type="radio" name="d2" value="Não"><span class="rd-dot"></span> Não, a rádio cuidará do visual</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">D3</span> O quiz deve ter a marca da rádio, da empresa parceira, ou ambas?</label>
+          <div class="radio-group" data-name="d3">
+            <label class="radio-label"><input type="radio" name="d3" value="Só rádio"><span class="rd-dot"></span> Apenas da rádio</label>
+            <label class="radio-label"><input type="radio" name="d3" value="Só empresa"><span class="rd-dot"></span> Apenas da empresa parceira</label>
+            <label class="radio-label"><input type="radio" name="d3" value="Ambas"><span class="rd-dot"></span> Ambas (co-branded)</label>
+            <label class="radio-label"><input type="radio" name="d3" value="Depende"><span class="rd-dot"></span> Depende do evento</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">D4</span> Existe preferência por um estilo visual?</label>
+          <div class="checkbox-group" id="d4Group">
+            <label class="check-label"><input type="checkbox" name="d4" value="Moderno"><span class="ck-box">✓</span> Moderno</label>
+            <label class="check-label"><input type="checkbox" name="d4" value="Divertido"><span class="ck-box">✓</span> Divertido</label>
+            <label class="check-label"><input type="checkbox" name="d4" value="Corporativo"><span class="ck-box">✓</span> Corporativo</label>
+            <label class="check-label"><input type="checkbox" name="d4" value="Minimalista"><span class="ck-box">✓</span> Minimalista</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO E -->
+      <div class="form-card">
+        <span class="form-section-label">Seção E</span>
+        <h3 class="form-section-title">Expectativas e Orçamento</h3>
+
+        <div class="form-group">
+          <label><span class="fq-num">E1</span> Qual o prazo ideal para ter o sistema funcionando para o primeiro evento?</label>
+          <input type="text" name="e1" placeholder="Ex: 30 dias, 2 meses, urgente...">
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">E2</span> Existe um orçamento definido ou uma faixa que gostariam de investir?</label>
+          <textarea name="e2" placeholder="Ex: Temos um budget de até R$ 30.000 para o projeto inicial..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">E3</span> Preferem um modelo de pagamento único + mensalidade ou cobrança por evento?</label>
+          <div class="radio-group" data-name="e3">
+            <label class="radio-label"><input type="radio" name="e3" value="Único + mensalidade"><span class="rd-dot"></span> Pagamento único + mensalidade</label>
+            <label class="radio-label"><input type="radio" name="e3" value="Por evento"><span class="rd-dot"></span> Cobrança por evento</label>
+            <label class="radio-label"><input type="radio" name="e3" value="A discutir"><span class="rd-dot"></span> Gostaria de discutir as opções</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="fq-num">E4</span> Além da coleta de leads, gostariam de alguma funcionalidade extra?</label>
+          <div class="checkbox-group" id="e4Group">
+            <label class="check-label"><input type="checkbox" name="e4" value="WhatsApp automático"><span class="ck-box">✓</span> Envio automático de WhatsApp</label>
+            <label class="check-label"><input type="checkbox" name="e4" value="Integração CRM"><span class="ck-box">✓</span> Integração com CRM</label>
+            <label class="check-label"><input type="checkbox" name="e4" value="Relatórios automáticos"><span class="ck-box">✓</span> Relatórios automáticos</label>
+            <label class="check-label"><input type="checkbox" name="e4" value="Ranking ao vivo"><span class="ck-box">✓</span> Ranking ao vivo em totem</label>
+          </div>
+          <input type="text" name="e4_outro" placeholder="Outras funcionalidades desejadas..." style="margin-top:10px">
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     QUIZ MODELO EM BRANCO
+     ═══════════════════════════════════════ -->
+<section id="quiz-modelo">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">Seção 04</span>
+      <h2 class="section-title">Monte um Quiz de Exemplo</h2>
+      <p class="section-desc">Preencha abaixo como seria um quiz para um cliente específico (real ou fictício). Isso nos ajuda a entender melhor a visão de vocês para o produto.</p>
+    </div>
+
+    <div class="form-card">
+      <span class="form-section-label">Contexto</span>
+      <h3 class="form-section-title">Informações do Quiz</h3>
+
+      <div class="form-group">
+        <label>Nome da empresa (real ou fictício)</label>
+        <input type="text" name="qb_empresa" placeholder="Ex: Auto Premium Veículos" id="qbEmpresa">
+      </div>
+
+      <div class="form-group">
+        <label>Segmento da empresa</label>
+        <input type="text" name="qb_segmento" placeholder="Ex: Concessionária de veículos" id="qbSegmento">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de quiz desejado</label>
+        <select name="qb_tipo" id="qbTipo">
+          <option value="">Selecione...</option>
+          <option value="Perfil">🎯 Quiz de Perfil (Recomendação)</option>
+          <option value="Trivia">🧠 Trivia / Conhecimento</option>
+          <option value="Preferência">📊 Preferências / Pesquisa</option>
+          <option value="Roleta">🎰 Roleta de Prêmios</option>
+          <option value="Match">💡 Compatibilidade / Match</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Título do quiz (o que o participante verá)</label>
+        <input type="text" name="qb_titulo" placeholder='Ex: "Descubra qual carro é a sua cara!"' id="qbTitulo">
+      </div>
+
+      <div class="form-group">
+        <label>Objetivo principal do quiz</label>
+        <textarea name="qb_objetivo" placeholder="Ex: Coletar leads de pessoas interessadas em trocar de carro nos próximos 6 meses..." id="qbObjetivo"></textarea>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <span class="form-section-label">Perguntas</span>
+      <h3 class="form-section-title">Monte as perguntas do quiz</h3>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Adicione as perguntas que esse quiz teria. Inclua as opções de resposta para cada uma.</p>
+
+      <div id="quizBuilderQuestions"></div>
+      <button class="btn-add-q" type="button" onclick="addBuilderQuestion()">+ Adicionar Pergunta</button>
+    </div>
+
+    <div class="form-card">
+      <span class="form-section-label">Resultado</span>
+      <h3 class="form-section-title">O que o participante vê no final?</h3>
+
+      <div class="form-group">
+        <label>Descreva a tela de resultado ideal</label>
+        <textarea name="qb_resultado" placeholder='Ex: Mostrar o carro recomendado com uma foto, o texto "Agende um test-drive!" e um botão para WhatsApp do vendedor...' id="qbResultado"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Há prêmio ou incentivo ao final?</label>
+        <input type="text" name="qb_premio" placeholder="Ex: Cupom de 10% em acessórios, brinde na loja..." id="qbPremio">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SUBMIT
+     ═══════════════════════════════════════ -->
+<section id="enviar">
+  <div class="container">
+    <div class="submit-section">
+      <h2 class="section-title" style="text-align:center; margin-bottom:12px;">Tudo pronto?</h2>
+      <p class="section-desc" style="text-align:center; margin:0 auto 32px;">Ao enviar, um PDF será gerado com todas as respostas e o WhatsApp será aberto para envio.</p>
+      <button class="btn-submit" type="button" onclick="submitAll()">📄 Gerar PDF e Enviar via WhatsApp</button>
+      <p class="submit-note">O PDF será baixado automaticamente e o WhatsApp será aberto</p>
+    </div>
+  </div>
+</section>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ PDF gerado! Abrindo WhatsApp...</div>
+
+<!-- Confetti -->
+<div class="confetti-box" id="confettiBox"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ══════════════════════════════════════════
+// NAV SCROLL SPY
+// ══════════════════════════════════════════
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ══════════════════════════════════════════
+// FORM HELPERS
+// ══════════════════════════════════════════
+// Checkboxes and radios are handled purely via CSS :has(input:checked)
+// No JavaScript needed for toggle state
+
+// ══════════════════════════════════════════
+// QUIZ BUILDER (BLANK QUIZ)
+// ══════════════════════════════════════════
+let builderQuestions = [];
+let builderQCount = 0;
+
+function addBuilderQuestion() {
+  builderQCount++;
+  const id = builderQCount;
+  builderQuestions.push(id);
+  const container = document.getElementById('quizBuilderQuestions');
+  const div = document.createElement('div');
+  div.className = 'quiz-builder-q';
+  div.id = 'qbq_' + id;
+  div.innerHTML = `
+    <div class="qb-header">
+      <span class="qb-num">Pergunta ${id}</span>
+      <button class="qb-remove" onclick="removeBuilderQ(${id})">Remover</button>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <input type="text" name="qbq_${id}_text" placeholder="Digite a pergunta...">
+    </div>
+    <div class="qb-opts" id="qbq_${id}_opts">
+      <div class="qb-opt-row"><span class="qb-opt-letter">A</span><input type="text" name="qbq_${id}_opt_a" placeholder="Opção A"></div>
+      <div class="qb-opt-row"><span class="qb-opt-letter">B</span><input type="text" name="qbq_${id}_opt_b" placeholder="Opção B"></div>
+      <div class="qb-opt-row"><span class="qb-opt-letter">C</span><input type="text" name="qbq_${id}_opt_c" placeholder="Opção C"></div>
+      <div class="qb-opt-row"><span class="qb-opt-letter">D</span><input type="text" name="qbq_${id}_opt_d" placeholder="Opção D"></div>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function removeBuilderQ(id) {
+  const el = document.getElementById('qbq_' + id);
+  if (el) el.remove();
+  builderQuestions = builderQuestions.filter(q => q !== id);
+}
+
+// Init with 3 questions
+addBuilderQuestion();
+addBuilderQuestion();
+addBuilderQuestion();
+
+// ══════════════════════════════════════════
+// QUIZ DEMOS DATA
+// ══════════════════════════════════════════
+const QD = {
+  perfil: {
+    theme:"perfil", icon:"🚗", title:"Descubra qual carro combina com você!", desc:"Responda 3 perguntas sobre seu estilo de vida.",
+    questions:[
+      { text:"Como é sua rotina durante a semana?", type:"options", options:[
+        {l:"A",t:"Trabalho no centro, trânsito pesado",tag:"urbano"},{l:"B",t:"Viajo bastante por estradas",tag:"estrada"},
+        {l:"C",t:"Levo a família para escola e atividades",tag:"familia"},{l:"D",t:"Aventuras e trilhas nos finais de semana",tag:"aventura"}]},
+      { text:"O que mais importa na hora de escolher um carro?", type:"options", options:[
+        {l:"A",t:"Economia de combustível",tag:"urbano"},{l:"B",t:"Conforto e tecnologia",tag:"estrada"},
+        {l:"C",t:"Espaço interno e segurança",tag:"familia"},{l:"D",t:"Potência e capacidade off-road",tag:"aventura"}]},
+      { text:"Qual faixa de investimento você considera?", type:"options", options:[
+        {l:"A",t:"Até R$ 80 mil",tag:"urbano"},{l:"B",t:"R$ 80 a R$ 150 mil",tag:"estrada"},
+        {l:"C",t:"R$ 150 a R$ 250 mil",tag:"familia"},{l:"D",t:"Acima de R$ 250 mil",tag:"aventura"}]}
+    ],
+    results:{
+      urbano:{e:"🏙️",t:"Hatch Urbano Econômico",d:"Carro compacto, ágil no trânsito. HB20, Polo ou Onix são perfeitos para você!"},
+      estrada:{e:"🛣️",t:"Sedan Confortável",d:"Conforto para longas distâncias. Corolla, Civic ou Sentra!"},
+      familia:{e:"👨‍👩‍👧‍👦",t:"SUV Familiar",d:"Espaço e segurança! Compass, Tucson ou T-Cross."},
+      aventura:{e:"🏔️",t:"SUV / Picape Off-Road",d:"Espírito aventureiro! Hilux, Ranger ou Bronco Sport."}
+    }
+  },
+  trivia: {
+    theme:"trivia", icon:"🍺", title:"Quanto você sabe sobre cerveja artesanal?", desc:"3 perguntas — cada acerto vale pontos!",
+    questions:[
+      { text:"Qual ingrediente é responsável pelo amargor da cerveja?", type:"trivia", options:[
+        {l:"A",t:"Malte",c:false},{l:"B",t:"Lúpulo",c:true},{l:"C",t:"Levedura",c:false},{l:"D",t:"Trigo",c:false}]},
+      { text:"A cerveja IPA (India Pale Ale) tem origem em qual país?", type:"trivia", options:[
+        {l:"A",t:"Estados Unidos",c:false},{l:"B",t:"Índia",c:false},{l:"C",t:"Inglaterra",c:true},{l:"D",t:"Alemanha",c:false}]},
+      { text:"Qual destes estilos é tipicamente uma cerveja escura e encorpada?", type:"trivia", options:[
+        {l:"A",t:"Pilsen",c:false},{l:"B",t:"Witbier",c:false},{l:"C",t:"Stout",c:true},{l:"D",t:"Saison",c:false}]}
+    ],
+    scoreR:[
+      {min:0,max:0,e:"😅",t:"Iniciante Cervejeiro",d:"Nenhum acerto! Aproveite o estande para aprender."},
+      {min:1,max:1,e:"🍻",t:"Apreciador Casual",d:"1/3! Visite o mestre cervejeiro!"},
+      {min:2,max:2,e:"🎖️",t:"Conhecedor",d:"2/3! Cupom de 15% para você!"},
+      {min:3,max:3,e:"🏆",t:"Mestre Cervejeiro!",d:"3/3! Degustação exclusiva!"}
+    ]
+  },
+  preferencia: {
+    theme:"preferencia", icon:"🍕", title:"Qual sabor combina com você?", desc:"Pesquisa rápida sobre suas preferências.",
+    questions:[
+      { text:"Escolha a categoria de comida que mais te atrai:", type:"image", options:[
+        {em:"🍕",lb:"Italiana"},{em:"🍣",lb:"Japonesa"},{em:"🌮",lb:"Mexicana"},{em:"🍔",lb:"Americana"}]},
+      { text:"De 1 a 5, quanto você gosta de experimentar sabores novos?", type:"scale", min:1,max:5, labels:["Prefiro o tradicional","Adoro experimentar!"]},
+      { text:"Qual ocasião mais combina com uma boa refeição?", type:"image", options:[
+        {em:"💼",lb:"Almoço de trabalho"},{em:"❤️",lb:"Jantar romântico"},{em:"👨‍👩‍👧‍👦",lb:"Reunião em família"},{em:"🎉",lb:"Festa com amigos"}]}
+    ],
+    genResult:{e:"👨‍🍳",t:"Obrigado pelo feedback!",d:"Suas preferências foram registradas! Fique de olho no WhatsApp para ofertas."}
+  },
+  roleta: {
+    theme:"roleta", icon:"🎰", title:"Responda e Gire a Roleta!", desc:"3 perguntas rápidas + chance de prêmios!",
+    questions:[
+      { text:"Como você ficou sabendo deste evento?", type:"options", options:[
+        {l:"A",t:"Rádio Mix FM"},{l:"B",t:"Instagram / Redes Sociais"},{l:"C",t:"Indicação de amigo"},{l:"D",t:"Passei por acaso"}]},
+      { text:"Você já é cliente da marca patrocinadora?", type:"options", options:[
+        {l:"A",t:"Sim, cliente fiel!"},{l:"B",t:"Já comprei uma vez"},{l:"C",t:"Não, mas tenho interesse"},{l:"D",t:"Ainda não conheço bem"}]},
+      { text:"Qual tipo de promoção mais te atrai?", type:"options", options:[
+        {l:"A",t:"Desconto direto"},{l:"B",t:"Brinde exclusivo"},{l:"C",t:"Sorteio grande"},{l:"D",t:"Cashback"}]}
+    ],
+    prizes:[
+      {t:"10% OFF",em:"🏷️"},{t:"Brinde!",em:"🎁"},{t:"20% OFF",em:"💰"},
+      {t:"Tente de novo",em:"🔄"},{t:"Frete Grátis",em:"🚚"},{t:"50% OFF!",em:"🔥"}
+    ]
+  },
+  match: {
+    theme:"match", icon:"🏋️", title:"Qual plano de academia combina com você?", desc:"Descubra seu match fitness em 3 perguntas.",
+    questions:[
+      { text:"Quantas vezes por semana pretende treinar?", type:"options", options:[
+        {l:"A",t:"1-2 vezes (leve)",s:1},{l:"B",t:"3-4 vezes (moderado)",s:2},{l:"C",t:"5-6 vezes (intenso)",s:3},{l:"D",t:"Todos os dias!",s:4}]},
+      { text:"Qual atividade mais te interessa?", type:"options", options:[
+        {l:"A",t:"Musculação e peso livre",s:3},{l:"B",t:"Aulas em grupo (spinning, dança)",s:2},{l:"C",t:"Natação e atividades aquáticas",s:4},{l:"D",t:"Yoga e pilates",s:1}]},
+      { text:"O que mais importa na escolha de uma academia?", type:"options", options:[
+        {l:"A",t:"Preço acessível",s:1},{l:"B",t:"Localização e conveniência",s:2},{l:"C",t:"Estrutura e variedade",s:3},{l:"D",t:"Acompanhamento de personal",s:4}]}
+    ],
+    matchR:[
+      {min:3,max:5,p:72,plan:"Plano Básico",em:"💪",d:"Ideal para quem está começando. Acesso à musculação e aulas essenciais."},
+      {min:6,max:8,p:85,plan:"Plano Fitness",em:"🔥",d:"Perfeito para seu ritmo! Todas as modalidades e acesso estendido."},
+      {min:9,max:12,p:95,plan:"Plano Premium",em:"🏆",d:"Match quase perfeito! Acesso total + natação + personal."}
+    ]
+  }
+};
+
+// ══════════════════════════════════════════
+// QUIZ ENGINE
+// ══════════════════════════════════════════
+class QE {
+  constructor(el) { this.el = document.getElementById(el); this.q = null; this.ci = 0; this.ans = []; this.ts = 0; this.ms = 0; this.locked = false; }
+
+  load(id) {
+    this.q = QD[id]; this.ci = 0; this.ans = []; this.ts = 0; this.ms = 0; this.locked = false;
+    this.draw();
+  }
+
+  draw() {
+    const q = this.q, total = q.questions.length, ci = this.ci, done = ci >= total;
+    let html = `<div data-theme="${q.theme}"><div class="qcard"><div class="qcard-header"><span class="qi">${q.icon}</span><h3>${q.title}</h3><p>${q.desc}</p></div>`;
+
+    if (!done) {
+      html += `<div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:${((ci+1)/total)*100}%"></div></div><span class="progress-text">${ci+1}/${total}</span></div>`;
+      html += `<div class="q-area"><div class="q-text">${q.questions[ci].text}</div>${this.renderInput(q.questions[ci])}</div>`;
+      html += `<div class="q-nav"><button class="btn-p" ${ci===0?'style="visibility:hidden"':''} onclick="qe.prev()">← Voltar</button><button class="btn-n" id="btnN" disabled onclick="qe.next()">Próxima →</button></div>`;
+    } else {
+      html += this.renderResult();
+    }
+
+    html += '</div></div>';
+    this.el.innerHTML = html;
+  }
+
+  renderInput(q) {
+    if (q.type==='options'||q.type==='trivia') {
+      return `<div class="opts">${q.options.map((o,i)=>`<button class="opt-btn" onclick="qe.selOpt(${i})"><span class="opt-letter">${o.l}</span><span>${o.t}</span></button>`).join('')}</div>`;
+    }
+    if (q.type==='scale') {
+      let b='';for(let i=q.min;i<=q.max;i++)b+=`<button class="scale-btn" onclick="qe.selScale(${i})">${i}</button>`;
+      return `<div class="scale-wrap">${b}</div><div class="scale-labels"><span>${q.labels[0]}</span><span>${q.labels[1]}</span></div>`;
+    }
+    if (q.type==='image') {
+      return `<div class="img-opts">${q.options.map((o,i)=>`<button class="img-opt-btn" onclick="qe.selImg(${i})"><div class="io-icon">${o.em}</div><div class="io-label">${o.lb}</div></button>`).join('')}</div>`;
+    }
+    return '';
+  }
+
+  selOpt(i) {
+    const q = this.q.questions[this.ci];
+    if (q.type==='trivia') {
+      if (this.locked) return; this.locked = true;
+      const btns = this.el.querySelectorAll('.opt-btn');
+      btns.forEach((b,j) => { b.style.pointerEvents='none'; if(q.options[j].c) b.classList.add('correct'); if(j===i&&!q.options[j].c) b.classList.add('wrong'); if(j===i) b.classList.add('selected'); });
+      if (q.options[i].c) this.ts++;
+      this.ans[this.ci] = i;
+      document.getElementById('btnN').disabled = false;
+      return;
+    }
+    const btns = this.el.querySelectorAll('.opt-btn');
+    btns.forEach(b=>b.classList.remove('selected'));
+    btns[i].classList.add('selected');
+    this.ans[this.ci] = i;
+    document.getElementById('btnN').disabled = false;
+  }
+
+  selScale(v) {
+    this.el.querySelectorAll('.scale-btn').forEach(b=>{b.classList.remove('selected');if(parseInt(b.textContent)===v)b.classList.add('selected');});
+    this.ans[this.ci] = v;
+    document.getElementById('btnN').disabled = false;
+  }
+
+  selImg(i) {
+    this.el.querySelectorAll('.img-opt-btn').forEach(b=>b.classList.remove('selected'));
+    this.el.querySelectorAll('.img-opt-btn')[i].classList.add('selected');
+    this.ans[this.ci] = i;
+    document.getElementById('btnN').disabled = false;
+  }
+
+  next() {
+    if (this.ans[this.ci]===undefined) return;
+    this.ci++; this.locked = false;
+    if (this.q.theme==='match'&&this.ci<=this.q.questions.length) {
+      this.ms=0; for(let i=0;i<this.ci;i++){const qq=this.q.questions[i];if(qq.options&&qq.options[this.ans[i]]?.s)this.ms+=qq.options[this.ans[i]].s;}
+    }
+    this.draw();
+  }
+
+  prev() { if(this.ci>0){this.ci--;this.locked=false;this.draw();} }
+
+  renderResult() {
+    const q = this.q;
+    if (q.theme==='perfil') {
+      const tags={};q.questions.forEach((qq,i)=>{const o=qq.options[this.ans[i]];if(o?.tag)tags[o.tag]=(tags[o.tag]||0)+1;});
+      const top=Object.entries(tags).sort((a,b)=>b[1]-a[1])[0][0], r=q.results[top];
+      return `<div class="result-scr show"><span class="re">${r.e}</span><div class="rt">${r.t}</div><div class="rd">${r.d}</div><button class="btn-restart" onclick="qe.load('perfil')">Refazer ↻</button></div>`;
+    }
+    if (q.theme==='trivia') {
+      const r=q.scoreR.find(s=>this.ts>=s.min&&this.ts<=s.max);
+      if(this.ts===3)setTimeout(()=>confetti(),300);
+      return `<div class="result-scr show"><span class="re">${r.e}</span><div class="rt">${r.t}</div><span class="score-badge">${this.ts}/3 acertos</span><div class="rd" style="margin-top:14px">${r.d}</div><button class="btn-restart" onclick="qe.load('trivia')">Tentar novamente ↻</button></div>`;
+    }
+    if (q.theme==='preferencia') {
+      const r=q.genResult;
+      return `<div class="result-scr show"><span class="re">${r.e}</span><div class="rt">${r.t}</div><div class="rd">${r.d}</div><button class="btn-restart" onclick="qe.load('preferencia')">Refazer ↻</button></div>`;
+    }
+    if (q.theme==='roleta') {
+      return `<div class="q-area"><div class="roulette-box"><div class="roulette-pointer"></div><div class="roulette-wheel" id="rWheel">${this.drawWheel()}</div><button class="spin-btn" id="spinB" onclick="qe.spin()">🎰 Girar a Roleta!</button><div class="prize-popup" id="pPopup"><span class="pe" id="pE"></span><div class="pt" id="pT"></div><div class="pd" id="pD"></div></div></div><div style="text-align:center;margin-top:10px"><button class="btn-restart" onclick="qe.load('roleta')">Jogar Novamente ↻</button></div></div>`;
+    }
+    if (q.theme==='match') {
+      const r=q.matchR.find(m=>this.ms>=m.min&&this.ms<=m.max)||q.matchR[q.matchR.length-1];
+      const clr=r.p>90?'var(--green)':r.p>80?'var(--purple)':'var(--cyan)';
+      return `<div class="result-scr show"><div class="match-result"><div class="match-circle" style="border-color:${clr};color:${clr}">${r.p}%</div><div class="match-label">${r.em} ${r.plan}</div><div class="match-desc">${r.d}</div></div><button class="btn-restart" onclick="qe.load('match')">Refazer ↻</button></div>`;
+    }
+  }
+
+  drawWheel() {
+    const pz=this.q.prizes,cnt=pz.length,sa=360/cnt;let h='';
+    pz.forEach((p,i)=>{const rot=sa*i,hue=(i*60)%360;
+      h+=`<div class="seg" style="transform:rotate(${rot}deg) skewY(-${90-sa}deg);background:hsl(${hue},60%,${i%2===0?'25':'18'}%)"><span style="transform:skewY(${90-sa}deg) rotate(${sa/2}deg);display:block;padding:10px;font-size:0.6rem">${p.em}<br>${p.t}</span></div>`;
+    }); return h;
+  }
+
+  spin() {
+    const btn=document.getElementById('spinB'),wh=document.getElementById('rWheel');btn.disabled=true;
+    const pz=this.q.prizes,cnt=pz.length,sa=360/cnt,wi=Math.floor(Math.random()*cnt),target=5*360+(360-wi*sa-sa/2);
+    wh.style.transform=`rotate(${target}deg)`;
+    setTimeout(()=>{
+      document.getElementById('pE').textContent=pz[wi].em;
+      document.getElementById('pT').textContent=`Você ganhou: ${pz[wi].t}`;
+      document.getElementById('pD').textContent='Mostre esta tela no balcão para resgatar!';
+      document.getElementById('pPopup').classList.add('show');
+      confetti();
+    },4200);
+  }
+}
+
+const qe = new QE('quizStage');
+
+// Tabs
+document.querySelectorAll('.quiz-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.quiz-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    qe.load(tab.dataset.qid);
+  });
+});
+qe.load('perfil');
+
+// ══════════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════════
+function confetti() {
+  const box=document.getElementById('confettiBox'),cols=['#e94560','#00d2ff','#f5a623','#a855f7','#00e676','#f7dc6f'];
+  for(let i=0;i<50;i++){const p=document.createElement('div');p.className='confetti-p';p.style.left=Math.random()*100+'%';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDuration=(2+Math.random()*2)+'s';p.style.animationDelay=Math.random()*0.6+'s';p.style.width=(6+Math.random()*7)+'px';p.style.height=(6+Math.random()*7)+'px';p.style.borderRadius=Math.random()>0.5?'50%':'2px';box.appendChild(p);}
+  setTimeout(()=>{box.innerHTML='';},4000);
+}
+
+// ══════════════════════════════════════════
+// SUBMIT ALL
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// DYNAMIC jsPDF LOADER
+// ══════════════════════════════════════════
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      return resolve();
+    }
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error(`Falha ao carregar: ${src}`));
+    document.head.appendChild(s);
+  });
+}
+
+async function ensureJsPDF() {
+  if (window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+  
+  const CDN_URLS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js',
+    'https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js',
+    'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js'
+  ];
+
+  for (const url of CDN_URLS) {
+    try {
+      await loadScript(url);
+      if (window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+    } catch(e) { console.warn(e.message); }
+  }
+  
+  throw new Error('Não foi possível carregar a biblioteca de PDF.');
+}
+
+// ══════════════════════════════════════════
+// SUBMIT ALL
+// ══════════════════════════════════════════
+async function submitAll() {
+  const btn = document.querySelector('.btn-submit');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Gerando PDF...';
+  btn.disabled = true;
+
+  try {
+    const JsPDF = await ensureJsPDF();
+
+  // Collect all form data
+  const data = {};
+  const form = document.getElementById('briefingForm');
+  const fd = new FormData(form);
+  fd.forEach((val, key) => {
+    if (data[key]) {
+      if (Array.isArray(data[key])) data[key].push(val);
+      else data[key] = [data[key], val];
+    } else {
+      data[key] = val;
+    }
+  });
+
+  ['b2','c2','c5','d4','e4'].forEach(name => {
+    const checked = [];
+    document.querySelectorAll(`input[name="${name}"]:checked`).forEach(cb => checked.push(cb.value));
+    if (checked.length) data[name] = checked.join(', ');
+  });
+
+  data['qb_empresa'] = document.getElementById('qbEmpresa')?.value || '';
+  data['qb_segmento'] = document.getElementById('qbSegmento')?.value || '';
+  data['qb_tipo'] = document.getElementById('qbTipo')?.value || '';
+  data['qb_titulo'] = document.getElementById('qbTitulo')?.value || '';
+  data['qb_objetivo'] = document.getElementById('qbObjetivo')?.value || '';
+  data['qb_resultado'] = document.getElementById('qbResultado')?.value || '';
+  data['qb_premio'] = document.getElementById('qbPremio')?.value || '';
+
+  // ── Generate PDF ──
+  const pdf = new JsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, ML = 18, MR = 18, CW = W - ML - MR;
+  let y = 0;
+
+  const C = { accent: [233,69,96], blue: [15,52,96], dark: [20,20,34], text: [50,50,65], muted: [120,120,140], white: [255,255,255] };
+
+  function np() { pdf.addPage(); y = 20; }
+  function cp(need) { if (y + need > H - 20) np(); }
+
+  // COVER
+  pdf.setFillColor(...C.dark);
+  pdf.rect(0, 0, W, H, 'F');
+  pdf.setFillColor(...C.accent);
+  pdf.rect(0, 0, W, 5, 'F');
+  pdf.setTextColor(...C.accent);
+  pdf.setFontSize(36);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('BRIEFING', W/2, 90, { align: 'center' });
+  pdf.setTextColor(...C.white);
+  pdf.setFontSize(18);
+  pdf.text('Quiz Interativo \u2014 R\u00e1dio Mix FM', W/2, 105, { align: 'center' });
+  pdf.setDrawColor(...C.accent);
+  pdf.setLineWidth(0.5);
+  pdf.line(W/2 - 40, 115, W/2 + 40, 115);
+  pdf.setTextColor(...C.muted);
+  pdf.setFontSize(11);
+  pdf.text('Formul\u00e1rio de Briefing Inicial + Quiz Modelo', W/2, 128, { align: 'center' });
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  pdf.setFontSize(10);
+  pdf.text(`Gerado em ${dateStr}`, W/2, 145, { align: 'center' });
+
+  // CONTENT
+  np();
+
+  function sh(icon, title) {
+    cp(18);
+    pdf.setFillColor(...C.accent);
+    pdf.roundedRect(ML, y, CW, 12, 2, 2, 'F');
+    pdf.setTextColor(...C.white);
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`${icon}  ${title}`, ML + 5, y + 8);
+    y += 18;
+  }
+
+  function fr(label, value) {
+    const val = value || 'N\u00e3o respondido';
+    cp(16);
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(...C.blue);
+    pdf.text(label, ML, y + 4);
+    y += 6;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(...C.text);
+    pdf.setFontSize(10);
+    const lines = pdf.splitTextToSize(val, CW - 4);
+    cp(lines.length * 5 + 6);
+    pdf.text(lines, ML + 2, y + 4);
+    y += lines.length * 5 + 6;
+    pdf.setDrawColor(230, 230, 235);
+    pdf.setLineWidth(0.2);
+    pdf.line(ML, y, W - MR, y);
+    y += 4;
+  }
+
+  sh('A', 'SOBRE OS EVENTOS');
+  fr('A1. Frequ\u00eancia de eventos', data.a1);
+  fr('A2. Eventos previstos (3 meses)', data.a2);
+  fr('A3. Tamanho m\u00e9dio de p\u00fablico', data.a3);
+  fr('A4. Internet dispon\u00edvel', data.a4);
+  fr('A5. Tablets/totens por evento', data.a5);
+
+  sh('B', 'EMPRESAS PARCEIRAS');
+  fr('B1. Empresas parceiras ativas', data.b1);
+  fr('B2. Segmentos', (data.b2 || '') + (data.b2_outro ? ' / Outro: ' + data.b2_outro : ''));
+  fr('B3. Entrega de leads hoje', (data.b3 || '') + (data.b3_outro ? ' / Detalhe: ' + data.b3_outro : ''));
+  fr('B4. Intermedia\u00e7\u00e3o', data.b4);
+
+  sh('C', 'SOBRE O QUIZ');
+  fr('C1. Experi\u00eancia anterior', data.c1);
+  fr('C2. Formatos interessantes', data.c2);
+  fr('C3. Limite de tempo', data.c3);
+  fr('C4. Pr\u00eamios/brindes', data.c4);
+  fr('C5. Dados essenciais', (data.c5 || '') + (data.c5_outro ? ' / Outro: ' + data.c5_outro : ''));
+
+  sh('D', 'VISUAL E MARCA');
+  fr('D1. Manual de identidade visual', data.d1);
+  fr('D2. Materiais visuais das empresas', data.d2);
+  fr('D3. Branding do quiz', data.d3);
+  fr('D4. Estilo visual preferido', data.d4);
+
+  sh('E', 'EXPECTATIVAS E OR\u00c7AMENTO');
+  fr('E1. Prazo ideal', data.e1);
+  fr('E2. Or\u00e7amento', data.e2);
+  fr('E3. Modelo de pagamento', data.e3);
+  fr('E4. Funcionalidades extras', (data.e4 || '') + (data.e4_outro ? ' / Outro: ' + data.e4_outro : ''));
+
+  // QUIZ MODELO
+  np();
+  pdf.setFillColor(...C.blue);
+  pdf.roundedRect(ML, y, CW, 14, 2, 2, 'F');
+  pdf.setTextColor(...C.white);
+  pdf.setFontSize(14);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('QUIZ MODELO \u2014 Preenchido pela R\u00e1dio', ML + 5, y + 10);
+  y += 22;
+
+  fr('Empresa', data.qb_empresa);
+  fr('Segmento', data.qb_segmento);
+  fr('Tipo de quiz', data.qb_tipo);
+  fr('T\u00edtulo do quiz', data.qb_titulo);
+  fr('Objetivo principal', data.qb_objetivo);
+  fr('Tela de resultado', data.qb_resultado);
+  fr('Pr\u00eamio/incentivo', data.qb_premio);
+
+  cp(14);
+  y += 4;
+  pdf.setFillColor(...C.accent);
+  pdf.roundedRect(ML, y, CW, 10, 2, 2, 'F');
+  pdf.setTextColor(...C.white);
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('PERGUNTAS DO QUIZ MODELO', ML + 5, y + 7);
+  y += 16;
+
+  let hasQuestions = false;
+  builderQuestions.forEach((id, idx) => {
+    const el = document.getElementById('qbq_' + id);
+    if (!el) return;
+    const qText = el.querySelector(`input[name="qbq_${id}_text"]`)?.value || '';
+    const opts = ['a','b','c','d'].map(l => {
+      const v = el.querySelector(`input[name="qbq_${id}_opt_${l}"]`)?.value || '';
+      return v ? `${l.toUpperCase()}) ${v}` : '';
+    }).filter(Boolean);
+
+    if (!qText && opts.length === 0) return;
+    hasQuestions = true;
+
+    cp(30);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(...C.blue);
+    pdf.setFontSize(10);
+    pdf.text(`Pergunta ${idx + 1}: ${qText || '(sem texto)'}`, ML, y + 4);
+    y += 8;
+
+    opts.forEach(opt => {
+      cp(8);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(...C.text);
+      pdf.setFontSize(9);
+      pdf.text(`     ${opt}`, ML, y + 4);
+      y += 6;
+    });
+    y += 4;
+  });
+
+  if (!hasQuestions) {
+    pdf.setFont('helvetica', 'italic');
+    pdf.setTextColor(...C.muted);
+    pdf.setFontSize(10);
+    pdf.text('Nenhuma pergunta preenchida.', ML, y + 4);
+  }
+
+  // FOOTERS
+  const totalPages = pdf.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    pdf.setPage(i);
+    pdf.setDrawColor(...C.accent);
+    pdf.setLineWidth(0.4);
+    pdf.line(ML, H - 14, W - MR, H - 14);
+    if (i > 1) {
+      pdf.setFontSize(8);
+      pdf.setTextColor(...C.muted);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text('Briefing Quiz Interativo \u2014 Mix FM', ML, H - 10);
+      pdf.text(`P\u00e1gina ${i - 1} de ${totalPages - 1}`, W - MR, H - 10, { align: 'right' });
+    }
+  }
+
+  // ── Save & Share ──
+  const fileName = `briefing-quiz-mixfm-${today.toISOString().slice(0,10)}.pdf`;
+  const pdfBlob = pdf.output('blob');
+  const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+  // Try native share (mobile) first
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+    try {
+      await navigator.share({
+        title: 'Briefing Quiz Interativo \u2014 Mix FM',
+        text: 'Segue o briefing do projeto Quiz Interativo.',
+        files: [pdfFile]
+      });
+    } catch(e) {
+      // Share cancelled — just download
+      pdf.save(fileName);
+    }
+  } else {
+    // Desktop: download + open WhatsApp
+    pdf.save(fileName);
+    const waMsg = encodeURIComponent(
+      `\ud83d\udccb *Briefing Quiz Interativo \u2014 R\u00e1dio Mix FM*\n\n` +
+      `Ol\u00e1! Segue em anexo o PDF com o briefing completo do projeto de Quiz Interativo.\n\n` +
+      `O arquivo *${fileName}* foi baixado. Por favor, anexe-o nesta conversa.\n\n` +
+      `_Gerado em ${dateStr}_`
+    );
+    setTimeout(() => {
+      window.open(`https://wa.me/?text=${waMsg}`, '_blank');
+    }, 800);
+  }
+
+  // Success feedback
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  confetti();
+  setTimeout(() => toast.classList.remove('show'), 4000);
+
+  } catch(err) {
+    alert('Erro ao gerar PDF: ' + err.message + '\n\nVerifique sua conex\u00e3o com a internet e tente novamente.');
+    console.error(err);
+  } finally {
+    const btn2 = document.querySelector('.btn-submit');
+    btn2.textContent = originalText;
+    btn2.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
