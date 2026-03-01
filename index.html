@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Quiz Interativo — Proposta Rádio Mix FM</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
    RESET & VARIABLES
@@ -13,17 +13,18 @@
 button, label, a, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --bg-deep: #08080f;
-  --bg-surface: #0f0f1a;
-  --bg-card: #141422;
-  --bg-card-alt: #1a1a2e;
-  --bg-input: #12121f;
-  --accent: #e94560;
-  --accent-glow: rgba(233,69,96,0.15);
-  --blue: #0f3460;
-  --blue-light: #1a5276;
+  --bg-deep: #0f0f0f;
+  --bg-surface: #141414;
+  --bg-card: #1a1a1a;
+  --bg-card-alt: #1f1f1f;
+  --bg-input: #111111;
+  --accent: #FFD100;         /* PANTONE 109C — amarelo Mix FM */
+  --accent-red: #E1251B;     /* PANTONE 485C — vermelho Mix FM */
+  --accent-glow: rgba(255,209,0,0.15);
+  --blue: #005CB9;           /* PANTONE 300C — azul Mix FM */
+  --blue-light: #1a6fd4;
   --cyan: #00d2ff;
-  --gold: #f5a623;
+  --gold: #FFD100;
   --green: #00e676;
   --purple: #a855f7;
   --text: #eeeef5;
@@ -41,7 +42,7 @@ button, label, a, select { touch-action: manipulation; -webkit-tap-highlight-col
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   background: var(--bg-deep);
   color: var(--text);
   line-height: 1.65;
@@ -55,9 +56,9 @@ body::before {
   content: '';
   position: fixed; inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(233,69,96,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(15,52,96,0.1) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,210,255,0.03) 0%, transparent 70%);
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,209,0,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(0,92,185,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(225,37,27,0.04) 0%, transparent 70%);
   z-index: 0;
   pointer-events: none;
 }
@@ -69,7 +70,7 @@ body::before {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(8,8,15,0.85);
+  background: rgba(15,15,15,0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
@@ -127,7 +128,7 @@ body::before {
   border-color: var(--border);
 }
 
-.nav-links a.active { color: var(--accent); border-color: rgba(233,69,96,0.25); }
+.nav-links a.active { color: var(--accent); border-color: rgba(255,209,0,0.30); }
 
 /* ═══════════════════════════════════════════
    LAYOUT
@@ -155,12 +156,12 @@ section {
 
 .hero-badge {
   display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--cyan);
-  border: 1px solid rgba(0,210,255,0.25);
+  color: var(--accent);
+  border: 1px solid rgba(255,209,0,0.35);
   padding: 5px 16px;
   border-radius: 100px;
   margin-bottom: 28px;
@@ -199,7 +200,7 @@ section {
 }
 
 .section-number {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Oswald', sans-serif;
   font-size: 11px;
   letter-spacing: 2px;
   color: var(--accent);
@@ -248,11 +249,11 @@ section {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
-.model-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
-.model-card:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
-.model-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), #f7dc6f); }
-.model-card:nth-child(4)::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
-.model-card:nth-child(5)::before { background: linear-gradient(90deg, var(--purple), var(--accent)); }
+.model-card:nth-child(1)::before { background: linear-gradient(90deg, #E1251B, #FFD100); }
+.model-card:nth-child(2)::before { background: linear-gradient(90deg, #005CB9, #FFD100); }
+.model-card:nth-child(3)::before { background: linear-gradient(90deg, #FFD100, #FF6B00); }
+.model-card:nth-child(4)::before { background: linear-gradient(90deg, #E1251B, #FF6B00); }
+.model-card:nth-child(5)::before { background: linear-gradient(90deg, #005CB9, #E1251B); }
 
 .model-card:hover {
   border-color: var(--border-hover);
@@ -327,13 +328,13 @@ section {
 }
 
 .flow-step .fs-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
   font-weight: 700;
   width: 22px; height: 22px;
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: #000;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
@@ -349,7 +350,7 @@ section {
 }
 
 .quiz-tab {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 8px 14px;
@@ -392,7 +393,7 @@ section {
 .progress-wrap { padding: 16px 16px 0; display: flex; align-items: center; gap: 10px; }
 .progress-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 100px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
-.progress-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
+.progress-text { font-family: 'Oswald', sans-serif; font-size: 11px; color: var(--text-dim); }
 
 .q-area { padding: 20px 16px 24px; }
 .q-text { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 18px; }
@@ -401,7 +402,7 @@ section {
 .opts { display: flex; flex-direction: column; gap: 8px; }
 
 .opt-btn {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   width: 100%; text-align: left;
   padding: 14px 18px; border-radius: var(--radius-sm);
   border: 1.5px solid var(--border); background: rgba(255,255,255,0.015);
@@ -412,8 +413,8 @@ section {
 .opt-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.04); transform: translateX(3px); }
 
 .opt-letter {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; font-weight: 700;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 700;
   width: 28px; height: 28px; border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.1);
@@ -421,16 +422,16 @@ section {
 }
 
 .opt-btn.selected { border-color: var(--accent); background: var(--accent-glow); }
-.opt-btn.selected .opt-letter { background: var(--accent); border-color: var(--accent); color: #fff; }
+.opt-btn.selected .opt-letter { background: var(--accent); border-color: var(--accent); color: #000; }
 .opt-btn.correct { border-color: var(--green); background: rgba(0,230,118,0.08); }
 .opt-btn.correct .opt-letter { background: var(--green); border-color: var(--green); color: var(--bg-deep); }
-.opt-btn.wrong { border-color: var(--accent); background: rgba(233,69,96,0.06); }
+.opt-btn.wrong { border-color: var(--accent-red); background: rgba(225,37,27,0.06); }
 
 /* Scale */
 .scale-wrap { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
 .scale-btn {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Oswald', sans-serif;
   width: 48px; height: 48px; border-radius: 10px;
   border: 1.5px solid var(--border); background: rgba(255,255,255,0.015);
   color: var(--text-dim); font-size: 1rem; font-weight: 700;
@@ -439,7 +440,7 @@ section {
 }
 
 .scale-btn:hover { border-color: var(--border-hover); transform: translateY(-3px); color: var(--text); }
-.scale-btn.selected { border-color: var(--cyan); background: rgba(0,210,255,0.1); color: var(--cyan); box-shadow: 0 0 14px rgba(0,210,255,0.15); transform: translateY(-3px); }
+.scale-btn.selected { border-color: var(--accent); background: rgba(255,209,0,0.12); color: var(--accent); box-shadow: 0 0 14px rgba(255,209,0,0.2); transform: translateY(-3px); }
 
 .scale-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.7rem; color: var(--text-dim); }
 
@@ -447,7 +448,7 @@ section {
 .img-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .img-opt-btn {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   border: 2px solid var(--border); border-radius: var(--radius-sm);
   background: rgba(255,255,255,0.015); cursor: pointer;
   transition: var(--transition); overflow: hidden; text-align: center; color: var(--text); padding: 0;
@@ -456,16 +457,16 @@ section {
 .img-opt-btn .io-icon { width: 100%; height: 76px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
 .img-opt-btn .io-label { padding: 10px 6px; font-size: 0.82rem; font-weight: 600; }
 .img-opt-btn:hover { border-color: var(--border-hover); transform: translateY(-3px); }
-.img-opt-btn.selected { border-color: var(--gold); background: rgba(245,166,35,0.06); }
+.img-opt-btn.selected { border-color: var(--accent); background: rgba(255,209,0,0.08); }
 
 /* Roulette */
 .roulette-box { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0; }
-.roulette-pointer { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid var(--accent); filter: drop-shadow(0 2px 5px rgba(233,69,96,0.4)); }
+.roulette-pointer { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid var(--accent-red); filter: drop-shadow(0 2px 5px rgba(225,37,27,0.5)); }
 
 .roulette-wheel {
   width: 200px; height: 200px; border-radius: 50%; position: relative;
   border: 3px solid rgba(255,255,255,0.08);
-  box-shadow: 0 0 30px rgba(233,69,96,0.1), inset 0 0 20px rgba(0,0,0,0.4);
+  box-shadow: 0 0 30px rgba(255,209,0,0.1), inset 0 0 20px rgba(0,0,0,0.4);
   overflow: hidden; transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99);
 }
 
@@ -477,10 +478,10 @@ section {
 }
 
 .spin-btn {
-  font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700;
+  font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 700;
   padding: 12px 36px; border-radius: 100px; border: none;
-  background: linear-gradient(135deg, var(--accent), #c0392b); color: #fff;
-  cursor: pointer; transition: var(--transition); box-shadow: 0 4px 18px rgba(233,69,96,0.25);
+  background: linear-gradient(135deg, #E1251B, #FFD100); color: #000;
+  cursor: pointer; transition: var(--transition); box-shadow: 0 4px 18px rgba(225,37,27,0.3);
 }
 
 .spin-btn:hover { transform: translateY(-2px) scale(1.03); }
@@ -509,9 +510,9 @@ section {
 
 /* Score badge */
 .score-badge {
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  color: var(--cyan); background: rgba(0,210,255,0.08);
-  border: 1px solid rgba(0,210,255,0.18); padding: 3px 12px;
+  font-family: 'Oswald', sans-serif; font-size: 12px;
+  color: var(--accent); background: rgba(255,209,0,0.1);
+  border: 1px solid rgba(255,209,0,0.25); padding: 3px 12px;
   border-radius: 100px; display: inline-block;
 }
 
@@ -519,11 +520,11 @@ section {
 .q-nav { padding: 0 16px 20px; display: flex; justify-content: space-between; align-items: center; }
 
 .btn-n, .btn-p {
-  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 700;
   padding: 10px 24px; border-radius: 100px; border: none; cursor: pointer; transition: var(--transition);
 }
 
-.btn-n { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(233,69,96,0.2); }
+.btn-n { background: var(--accent); color: #000; box-shadow: 0 4px 14px rgba(255,209,0,0.2); }
 .btn-n:hover { transform: translateY(-2px); }
 .btn-n:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .btn-p { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
@@ -537,7 +538,7 @@ section {
 .result-scr .rd { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; max-width: 400px; margin: 0 auto 20px; }
 
 .btn-restart {
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+  font-family: 'Montserrat', sans-serif; font-size: 0.82rem; font-weight: 600;
   padding: 8px 24px; border-radius: 100px;
   border: 1.5px solid var(--accent); background: transparent;
   color: var(--accent); cursor: pointer; transition: var(--transition);
@@ -545,30 +546,30 @@ section {
 
 .btn-restart:hover { background: var(--accent-glow); }
 
-/* Theme accents */
-[data-theme="perfil"] .progress-fill { background: linear-gradient(90deg, var(--accent), var(--purple)); }
-[data-theme="perfil"] .qcard-header::before { background: linear-gradient(135deg, var(--accent), var(--purple)); }
-[data-theme="trivia"] .progress-fill { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
-[data-theme="trivia"] .qcard-header::before { background: linear-gradient(135deg, var(--cyan), var(--blue-light)); }
-[data-theme="trivia"] .opt-btn.selected { border-color: var(--cyan); background: rgba(0,210,255,0.06); }
-[data-theme="trivia"] .opt-btn.selected .opt-letter { background: var(--cyan); border-color: var(--cyan); color: var(--bg-deep); }
-[data-theme="preferencia"] .progress-fill { background: linear-gradient(90deg, var(--gold), #f7dc6f); }
-[data-theme="preferencia"] .qcard-header::before { background: linear-gradient(135deg, var(--gold), #f7dc6f); }
-[data-theme="roleta"] .progress-fill { background: linear-gradient(90deg, var(--green), var(--cyan)); }
-[data-theme="roleta"] .qcard-header::before { background: linear-gradient(135deg, var(--green), var(--cyan)); }
-[data-theme="roleta"] .opt-btn.selected { border-color: var(--green); background: rgba(0,230,118,0.06); }
-[data-theme="roleta"] .opt-btn.selected .opt-letter { background: var(--green); border-color: var(--green); color: var(--bg-deep); }
-[data-theme="match"] .progress-fill { background: linear-gradient(90deg, var(--purple), var(--accent)); }
-[data-theme="match"] .qcard-header::before { background: linear-gradient(135deg, var(--purple), var(--accent)); }
-[data-theme="match"] .opt-btn.selected { border-color: var(--purple); background: rgba(168,85,247,0.06); }
-[data-theme="match"] .opt-btn.selected .opt-letter { background: var(--purple); border-color: var(--purple); }
+/* Theme accents — cores Mix FM */
+[data-theme="perfil"] .progress-fill { background: linear-gradient(90deg, #E1251B, #FFD100); }
+[data-theme="perfil"] .qcard-header::before { background: linear-gradient(135deg, #E1251B 0%, #FF6B00 50%, #FFD100 100%); }
+[data-theme="trivia"] .progress-fill { background: linear-gradient(90deg, #005CB9, #FFD100); }
+[data-theme="trivia"] .qcard-header::before { background: linear-gradient(135deg, #005CB9, #1a6fd4); }
+[data-theme="trivia"] .opt-btn.selected { border-color: #005CB9; background: rgba(0,92,185,0.08); }
+[data-theme="trivia"] .opt-btn.selected .opt-letter { background: #005CB9; border-color: #005CB9; color: #fff; }
+[data-theme="preferencia"] .progress-fill { background: linear-gradient(90deg, #E1251B, #FFD100); }
+[data-theme="preferencia"] .qcard-header::before { background: linear-gradient(135deg, #E1251B, #FFD100); }
+[data-theme="roleta"] .progress-fill { background: linear-gradient(90deg, #E1251B, #FFD100); }
+[data-theme="roleta"] .qcard-header::before { background: linear-gradient(135deg, #E1251B 0%, #FF6B00 50%, #FFD100 100%); }
+[data-theme="roleta"] .opt-btn.selected { border-color: var(--accent); background: rgba(255,209,0,0.08); }
+[data-theme="roleta"] .opt-btn.selected .opt-letter { background: var(--accent); border-color: var(--accent); color: #000; }
+[data-theme="match"] .progress-fill { background: linear-gradient(90deg, #005CB9, #E1251B); }
+[data-theme="match"] .qcard-header::before { background: linear-gradient(135deg, #005CB9, #E1251B); }
+[data-theme="match"] .opt-btn.selected { border-color: #005CB9; background: rgba(0,92,185,0.08); }
+[data-theme="match"] .opt-btn.selected .opt-letter { background: #005CB9; border-color: #005CB9; color: #fff; }
 
 /* ═══════════════════════════════════════════
    FORM STYLES (Section 7 + Blank Quiz)
    ═══════════════════════════════════════════ */
 .form-section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--accent); margin-bottom: 6px; display: block;
 }
 
@@ -590,10 +591,10 @@ section {
 }
 
 .form-group label .fq-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; font-weight: 700;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 700;
   background: var(--accent);
-  color: #fff; padding: 2px 7px; border-radius: 4px;
+  color: #000; padding: 2px 7px; border-radius: 4px;
   margin-right: 8px;
 }
 
@@ -604,7 +605,7 @@ input[type="email"],
 input[type="number"],
 textarea,
 select {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   width: 100%;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
@@ -712,15 +713,15 @@ select option { background: var(--bg-card); color: var(--text); }
 }
 
 .qb-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; font-weight: 700;
-  color: var(--purple); background: rgba(168,85,247,0.1);
-  border: 1px solid rgba(168,85,247,0.2);
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: var(--accent); background: rgba(255,209,0,0.1);
+  border: 1px solid rgba(255,209,0,0.25);
   padding: 3px 10px; border-radius: 100px;
 }
 
 .qb-remove {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.75rem; color: var(--text-dim);
   background: transparent; border: 1px solid var(--border);
   padding: 4px 12px; border-radius: 100px; cursor: pointer;
@@ -734,8 +735,8 @@ select option { background: var(--bg-card); color: var(--text); }
 .qb-opt-row { display: flex; gap: 8px; align-items: center; }
 
 .qb-opt-row .qb-opt-letter {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; font-weight: 700;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 700;
   width: 24px; height: 24px; border-radius: 6px;
   background: rgba(255,255,255,0.05); border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
@@ -745,7 +746,7 @@ select option { background: var(--bg-card); color: var(--text); }
 .qb-opt-row input { flex: 1; padding: 8px 12px; font-size: 0.82rem; }
 
 .btn-add-opt, .btn-add-q {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.78rem; font-weight: 600;
   padding: 6px 16px; border-radius: 100px;
   border: 1px dashed var(--border); background: transparent;
@@ -769,19 +770,20 @@ select option { background: var(--bg-card); color: var(--text); }
 }
 
 .btn-submit {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem; font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem; font-weight: 800;
+  letter-spacing: 0.5px; text-transform: uppercase;
   padding: 16px 36px; border-radius: 100px;
   border: none; cursor: pointer;
-  background: linear-gradient(135deg, var(--accent), #c0392b);
-  color: #fff; transition: var(--transition);
-  box-shadow: 0 6px 28px rgba(233,69,96,0.3);
+  background: linear-gradient(135deg, #E1251B 0%, #FF6B00 50%, #FFD100 100%);
+  color: #000; transition: var(--transition);
+  box-shadow: 0 6px 28px rgba(225,37,27,0.35);
   position: relative; overflow: hidden;
   width: 100%;
   max-width: 420px;
 }
 
-.btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 40px rgba(233,69,96,0.4); }
+.btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 40px rgba(255,209,0,0.4); }
 .btn-submit:active { transform: translateY(-1px); }
 
 .btn-submit::after {
@@ -863,6 +865,75 @@ select option { background: var(--bg-card); color: var(--text); }
   .quiz-builder-q { padding: 20px; }
   .qb-opt-row input { font-size: 0.9rem; }
 }
+
+/* ═══════════════════════════════════════════
+   ELEMENTO TERRA — Mídia Kit Mix FM 2025
+   ═══════════════════════════════════════════ */
+.terra-section {
+  position: relative;
+  overflow: hidden;
+  background: #080808;
+  padding: 60px 0 56px;
+  border-bottom: 1px solid var(--border);
+}
+
+.terra-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 65% 110% at 16% 52%,
+      rgba(150,75,0,0.60) 0%,
+      rgba(210,130,0,0.28) 28%,
+      rgba(255,200,0,0.08) 52%,
+      transparent 68%),
+    radial-gradient(ellipse 35% 55% at 8% 15%,
+      rgba(255,209,0,0.14) 0%,
+      transparent 55%);
+  pointer-events: none;
+}
+
+.terra-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.terra-left-words {
+  text-align: right;
+  flex-shrink: 0;
+  padding-right: 8px;
+}
+
+.terra-left-words span {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.7rem, 4.5vw, 2.9rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1.06;
+  letter-spacing: -0.3px;
+}
+
+.terra-diagram-wrap {
+  flex: 1;
+  min-width: 260px;
+  max-width: 460px;
+}
+
+.terra-diagram-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .terra-inner { flex-wrap: nowrap; justify-content: space-between; }
+  .terra-left-words { min-width: 190px; }
+  .terra-diagram-wrap { max-width: 480px; }
+}
 </style>
 </head>
 <body>
@@ -887,6 +958,113 @@ select option { background: var(--bg-card); color: var(--text); }
   <h1>Quiz <span class="hl">Interativo</span> para<br>Coleta de Leads</h1>
   <p>Conheça os modelos disponíveis, teste as demos e preencha o formulário inicial para darmos início ao seu projeto.</p>
 </header>
+
+<!-- ═══ ELEMENTO TERRA — Mídia Kit Mix FM 2025 ═══ -->
+<div class="terra-section">
+  <div class="terra-glow"></div>
+  <div class="container">
+    <div class="terra-inner">
+
+      <!-- Left: stacked bold words -->
+      <div class="terra-left-words">
+        <span>FESTIVAIS</span>
+        <span>EVENTOS</span>
+        <span>SHOWS</span>
+        <span>LIVE MKT</span>
+      </div>
+
+      <!-- Circular diagram -->
+      <div class="terra-diagram-wrap">
+        <svg viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama Terra — Audiência">
+
+          <!-- ── Main circle ── -->
+          <circle cx="260" cy="260" r="148" fill="#070707"/>
+          <circle cx="260" cy="260" r="148" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+
+          <!-- ── Crosshair: H + V lines through center ── -->
+          <line x1="66"  y1="260" x2="454" y2="260" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <line x1="260" y1="66"  x2="260" y2="454" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+          <!-- ── 4 arcs between satellite positions (clockwise, sweep=1) ── -->
+          <!-- Top arc: NW → NE, through (260, 112) -->
+          <path d="M 155.4 155.4 A 148 148 0 0 1 364.6 155.4"
+            stroke="rgba(255,255,255,0.22)" stroke-width="1.4" fill="none"/>
+          <!-- Right arc: NE → SE, through (408, 260) -->
+          <path d="M 364.6 155.4 A 148 148 0 0 1 364.6 364.6"
+            stroke="rgba(255,255,255,0.22)" stroke-width="1.4" fill="none"/>
+          <!-- Bottom arc: SE → SW, through (260, 408) -->
+          <path d="M 364.6 364.6 A 148 148 0 0 1 155.4 364.6"
+            stroke="rgba(255,255,255,0.22)" stroke-width="1.4" fill="none"/>
+          <!-- Left arc: SW → NW, through (112, 260) -->
+          <path d="M 155.4 364.6 A 148 148 0 0 1 155.4 155.4"
+            stroke="rgba(255,255,255,0.22)" stroke-width="1.4" fill="none"/>
+
+          <!-- ══ Satellite NW — ATIVO (amarelo) — Quiz ══ -->
+          <circle cx="123.5" cy="123.5" r="45" fill="#FFD100"/>
+          <!-- Ícone ≡ (hambúrguer) em preto sobre amarelo -->
+          <line x1="107" y1="115"   x2="140" y2="115"   stroke="#000" stroke-width="4"   stroke-linecap="round"/>
+          <line x1="107" y1="123.5" x2="140" y2="123.5" stroke="#000" stroke-width="4"   stroke-linecap="round"/>
+          <line x1="107" y1="132"   x2="140" y2="132"   stroke="#000" stroke-width="4"   stroke-linecap="round"/>
+
+          <!-- ══ Satellite NE — Analytics / Dashboard ══ -->
+          <circle cx="396.5" cy="123.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- Ícone ≈ (ondas) -->
+          <path d="M 380 113   Q 388.5 106 396.5 113   Q 404.5 120 413 113"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 380 123.5 Q 388.5 116.5 396.5 123.5 Q 404.5 130.5 413 123.5"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 380 134   Q 388.5 127 396.5 134   Q 404.5 141 413 134"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+          <!-- ══ Satellite SW — Engajamento / WhatsApp ══ -->
+          <circle cx="123.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- Ícone ))) vapor/calor -->
+          <path d="M 108 382 C 113 373 119 373 113 382 C 107 391 113 400 108 408"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 120.5 382 C 125.5 373 131.5 373 125.5 382 C 119.5 391 125.5 400 120.5 408"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 133 382 C 138 373 144 373 138 382 C 132 391 138 400 133 408"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+          <!-- ══ Satellite SE — CRM / Ranking ══ -->
+          <circle cx="396.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- Ícone sinal/radar (arcos concêntricos) -->
+          <path d="M 414.5 396.5 A 18 18 0 0 0 378.5 396.5"
+            stroke="rgba(255,255,255,0.52)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <path d="M 407.5 396.5 A 11 11 0 0 0 385.5 396.5"
+            stroke="rgba(255,255,255,0.46)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 402.5 396.5 A 6 6 0 0 0 390.5 396.5"
+            stroke="rgba(255,255,255,0.40)" stroke-width="2"   fill="none" stroke-linecap="round"/>
+          <circle cx="396.5" cy="396.5" r="2.5" fill="rgba(255,255,255,0.60)"/>
+
+          <!-- ══ Centro: rótulo TERRA ══ -->
+          <text x="260" y="228"
+            text-anchor="middle"
+            font-family="Oswald, sans-serif"
+            font-size="13"
+            letter-spacing="6"
+            fill="#FFD100"
+            font-weight="400">TERRA</text>
+
+          <!-- Ícone casa/montanha -->
+          <polygon points="260,238 250,256 270,256" fill="white" opacity="0.90"/>
+          <rect x="253" y="251" width="14" height="11" fill="white" opacity="0.90"/>
+
+          <!-- AUDIÊNCIA -->
+          <text x="260" y="303"
+            text-anchor="middle"
+            font-family="Oswald, sans-serif"
+            font-size="38"
+            font-weight="700"
+            fill="white"
+            letter-spacing="-0.5">AUDIÊNCIA</text>
+
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════
      SECTION 4 — MODELOS DE QUIZ
@@ -1603,7 +1781,7 @@ qe.load('perfil');
 // CONFETTI
 // ══════════════════════════════════════════
 function confetti() {
-  const box=document.getElementById('confettiBox'),cols=['#e94560','#00d2ff','#f5a623','#a855f7','#00e676','#f7dc6f'];
+  const box=document.getElementById('confettiBox'),cols=['#FFD100','#E1251B','#005CB9','#FF6B00','#ffffff','#f7dc6f'];
   for(let i=0;i<50;i++){const p=document.createElement('div');p.className='confetti-p';p.style.left=Math.random()*100+'%';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDuration=(2+Math.random()*2)+'s';p.style.animationDelay=Math.random()*0.6+'s';p.style.width=(6+Math.random()*7)+'px';p.style.height=(6+Math.random()*7)+'px';p.style.borderRadius=Math.random()>0.5?'50%':'2px';box.appendChild(p);}
   setTimeout(()=>{box.innerHTML='';},4000);
 }
@@ -1690,7 +1868,7 @@ async function submitAll() {
   const W = 210, H = 297, ML = 18, MR = 18, CW = W - ML - MR;
   let y = 0;
 
-  const C = { accent: [233,69,96], blue: [15,52,96], dark: [20,20,34], text: [50,50,65], muted: [120,120,140], white: [255,255,255] };
+  const C = { accent: [255,209,0], accentRed: [225,37,27], blue: [0,92,185], dark: [15,15,15], text: [50,50,65], muted: [120,120,140], white: [255,255,255] };
 
   function np() { pdf.addPage(); y = 20; }
   function cp(need) { if (y + need > H - 20) np(); }
@@ -1698,8 +1876,11 @@ async function submitAll() {
   // COVER
   pdf.setFillColor(...C.dark);
   pdf.rect(0, 0, W, H, 'F');
+  // Gradient stripe: use red on left → yellow on right (simulate with two rects)
+  pdf.setFillColor(...C.accentRed);
+  pdf.rect(0, 0, W/2, 6, 'F');
   pdf.setFillColor(...C.accent);
-  pdf.rect(0, 0, W, 5, 'F');
+  pdf.rect(W/2, 0, W/2, 6, 'F');
   pdf.setTextColor(...C.accent);
   pdf.setFontSize(36);
   pdf.setFont('helvetica', 'bold');
@@ -1725,7 +1906,7 @@ async function submitAll() {
     cp(18);
     pdf.setFillColor(...C.accent);
     pdf.roundedRect(ML, y, CW, 12, 2, 2, 'F');
-    pdf.setTextColor(...C.white);
+    pdf.setTextColor(...C.dark);
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'bold');
     pdf.text(`${icon}  ${title}`, ML + 5, y + 8);
@@ -1807,7 +1988,7 @@ async function submitAll() {
   y += 4;
   pdf.setFillColor(...C.accent);
   pdf.roundedRect(ML, y, CW, 10, 2, 2, 'F');
-  pdf.setTextColor(...C.white);
+  pdf.setTextColor(...C.dark);
   pdf.setFontSize(10);
   pdf.setFont('helvetica', 'bold');
   pdf.text('PERGUNTAS DO QUIZ MODELO', ML + 5, y + 7);
