@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Quiz Interativo — Proposta Rádio Mix FM</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
 <style>
 /* ═══════════════════════════════════════════
    RESET & VARIABLES
@@ -151,40 +152,236 @@ section {
    ═══════════════════════════════════════════ */
 .hero {
   text-align: center;
-  padding: 120px 16px 50px;
+  padding: 130px 16px 60px;
+  position: relative;
 }
 
+/* Animated sound-wave decoration behind hero */
+.hero-wave {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-wave svg {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  opacity: 0.06;
+}
+
+.hero > *:not(.hero-wave) { position: relative; z-index: 1; }
+
 .hero-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: 'Oswald', sans-serif;
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--accent);
   border: 1px solid rgba(255,209,0,0.35);
-  padding: 5px 16px;
+  padding: 5px 16px 5px 12px;
   border-radius: 100px;
   margin-bottom: 28px;
-  animation: fadeUp 0.7s ease-out;
+  opacity: 0; /* animated by Motion */
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
 }
 
 .hero h1 {
-  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -1.5px;
-  margin-bottom: 18px;
-  animation: fadeUp 0.7s ease-out 0.1s both;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity: 0;
 }
 
-.hero h1 .hl { color: var(--accent); }
+.hero h1 .hl {
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+  position: relative;
+  display: inline-block;
+}
+
+.hero h1 .hl-outline {
+  -webkit-text-stroke: 2px var(--accent);
+  color: transparent;
+}
 
 .hero p {
   font-size: 1.05rem;
   color: var(--text-secondary);
-  max-width: 540px;
+  max-width: 520px;
+  margin: 0 auto 32px;
+  opacity: 0;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+}
+
+.hero-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.hero-btn-primary {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 4px 20px rgba(255,209,0,0.3);
+}
+
+.hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,209,0,0.4); }
+
+.hero-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+}
+
+.hero-btn-ghost:hover { border-color: var(--text-secondary); color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   STATS BAND — números Mix FM
+   ═══════════════════════════════════════════ */
+.stats-band {
+  background: var(--accent-red);
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.stats-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #C01F17 0%, #E1251B 40%, #E1251B 60%, #C01F17 100%);
+}
+
+.stats-band-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
   margin: 0 auto;
-  animation: fadeUp 0.7s ease-out 0.2s both;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+}
+
+.stat-item {
+  padding: 22px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.stat-item:nth-child(2n) { border-right: none; }
+.stat-item:nth-last-child(-n+2) { border-bottom: none; }
+
+/* last if odd */
+.stat-item:last-child:nth-child(odd) {
+  grid-column: span 2;
+  border-bottom: none;
+  border-right: none;
+}
+
+.stat-num {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.72);
+}
+
+@media (min-width: 640px) {
+  .stats-band-inner {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .stat-item {
+    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,0.15);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:last-child:nth-child(odd) { grid-column: span 1; }
+}
+
+/* ═══════════════════════════════════════════
+   MOTION — animate-on-scroll base states
+   ═══════════════════════════════════════════ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+[data-reveal-left] {
+  opacity: 0;
+  transform: translateX(-28px);
+}
+
+/* ═══════════════════════════════════════════
+   TERRA — animation classes
+   ═══════════════════════════════════════════ */
+.terra-sat-ring {
+  transform-origin: 50% 50%;
+}
+
+/* ═══════════════════════════════════════════
+   PREFERS-REDUCED-MOTION
+   ═══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal], [data-reveal-left] {
+    opacity: 1;
+    transform: none;
+  }
+  .hero-badge, .hero h1, .hero p, .hero-cta {
+    opacity: 1;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @keyframes fadeUp {
@@ -900,21 +1097,116 @@ select option { background: var(--bg-card); color: var(--text); }
   justify-content: center;
 }
 
-.terra-left-words {
-  text-align: right;
+/* ── Elementos: lista dos 4 elementos Mix FM ── */
+.elementos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   flex-shrink: 0;
-  padding-right: 8px;
 }
 
-.terra-left-words span {
-  display: block;
+.elemento-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background 0.22s ease, border-color 0.22s ease;
+  outline: none;
+}
+
+.elemento-item:hover,
+.elemento-item:focus-visible,
+.elemento-item[aria-expanded="true"] {
+  background: rgba(255,255,255,0.04);
+}
+
+.elemento-item:focus-visible {
+  border-color: rgba(255,255,255,0.2);
+}
+
+.elemento-icon {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
   font-family: 'Oswald', sans-serif;
-  font-size: clamp(1.7rem, 4.5vw, 2.9rem);
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: -2px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.elemento-item:hover .elemento-icon,
+.elemento-item:focus-visible .elemento-icon,
+.elemento-item[aria-expanded="true"] .elemento-icon {
+  transform: scale(1.18) rotate(-4deg);
+}
+
+.elemento-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.elemento-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.6rem, 4.2vw, 2.5rem);
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--accent);
-  line-height: 1.06;
-  letter-spacing: -0.3px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  transition: letter-spacing 0.22s ease;
+}
+
+.elemento-item:hover .elemento-name,
+.elemento-item[aria-expanded="true"] .elemento-name {
+  letter-spacing: 0.5px;
+}
+
+/* Grid-row trick: animates height without JS measurement */
+.elemento-tags-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.elemento-item:hover .elemento-tags-wrap,
+.elemento-item:focus-visible .elemento-tags-wrap,
+.elemento-item[aria-expanded="true"] .elemento-tags-wrap {
+  grid-template-rows: 1fr;
+}
+
+.elemento-tags {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-top: 0;
+  transition: padding-top 0.3s ease;
+}
+
+.elemento-item:hover .elemento-tags,
+.elemento-item:focus-visible .elemento-tags,
+.elemento-item[aria-expanded="true"] .elemento-tags {
+  padding-top: 7px;
+}
+
+.elemento-tag {
+  font-size: 0.59rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
 }
 
 .terra-diagram-wrap {
@@ -929,9 +1221,15 @@ select option { background: var(--bg-card); color: var(--text); }
   display: block;
 }
 
+/* SVG satellite transitions */
+.terra-diagram-wrap svg circle,
+.terra-diagram-wrap svg path {
+  transition: opacity 0.3s ease, fill 0.3s ease, filter 0.3s ease;
+}
+
 @media (min-width: 640px) {
   .terra-inner { flex-wrap: nowrap; justify-content: space-between; }
-  .terra-left-words { min-width: 190px; }
+  .elementos-list { min-width: 210px; }
   .terra-diagram-wrap { max-width: 480px; }
 }
 </style>
@@ -954,10 +1252,84 @@ select option { background: var(--bg-card); color: var(--text); }
 
 <!-- ═══ HERO ═══ -->
 <header class="hero">
+  <!-- Decorative sound wave -->
+  <div class="hero-wave" aria-hidden="true">
+    <svg viewBox="0 0 700 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0"   y="80"  width="8" height="40"  rx="4" fill="#FFD100"/>
+      <rect x="18"  y="60"  width="8" height="80"  rx="4" fill="#E1251B"/>
+      <rect x="36"  y="40"  width="8" height="120" rx="4" fill="#FFD100"/>
+      <rect x="54"  y="70"  width="8" height="60"  rx="4" fill="#E1251B"/>
+      <rect x="72"  y="50"  width="8" height="100" rx="4" fill="#FFD100"/>
+      <rect x="90"  y="30"  width="8" height="140" rx="4" fill="#E1251B"/>
+      <rect x="108" y="60"  width="8" height="80"  rx="4" fill="#FFD100"/>
+      <rect x="126" y="20"  width="8" height="160" rx="4" fill="#E1251B"/>
+      <rect x="144" y="55"  width="8" height="90"  rx="4" fill="#FFD100"/>
+      <rect x="162" y="45"  width="8" height="110" rx="4" fill="#E1251B"/>
+      <rect x="180" y="70"  width="8" height="60"  rx="4" fill="#FFD100"/>
+      <rect x="198" y="35"  width="8" height="130" rx="4" fill="#E1251B"/>
+      <rect x="216" y="65"  width="8" height="70"  rx="4" fill="#FFD100"/>
+      <rect x="234" y="25"  width="8" height="150" rx="4" fill="#E1251B"/>
+      <rect x="252" y="50"  width="8" height="100" rx="4" fill="#FFD100"/>
+      <rect x="270" y="40"  width="8" height="120" rx="4" fill="#E1251B"/>
+      <rect x="288" y="75"  width="8" height="50"  rx="4" fill="#FFD100"/>
+      <rect x="306" y="30"  width="8" height="140" rx="4" fill="#E1251B"/>
+      <rect x="324" y="55"  width="8" height="90"  rx="4" fill="#FFD100"/>
+      <rect x="342" y="20"  width="8" height="160" rx="4" fill="#E1251B"/>
+      <rect x="360" y="60"  width="8" height="80"  rx="4" fill="#FFD100"/>
+      <rect x="378" y="45"  width="8" height="110" rx="4" fill="#E1251B"/>
+      <rect x="396" y="35"  width="8" height="130" rx="4" fill="#FFD100"/>
+      <rect x="414" y="65"  width="8" height="70"  rx="4" fill="#E1251B"/>
+      <rect x="432" y="50"  width="8" height="100" rx="4" fill="#FFD100"/>
+      <rect x="450" y="40"  width="8" height="120" rx="4" fill="#E1251B"/>
+      <rect x="468" y="70"  width="8" height="60"  rx="4" fill="#FFD100"/>
+      <rect x="486" y="30"  width="8" height="140" rx="4" fill="#E1251B"/>
+      <rect x="504" y="55"  width="8" height="90"  rx="4" fill="#FFD100"/>
+      <rect x="522" y="25"  width="8" height="150" rx="4" fill="#E1251B"/>
+      <rect x="540" y="60"  width="8" height="80"  rx="4" fill="#FFD100"/>
+      <rect x="558" y="45"  width="8" height="110" rx="4" fill="#E1251B"/>
+      <rect x="576" y="75"  width="8" height="50"  rx="4" fill="#FFD100"/>
+      <rect x="594" y="35"  width="8" height="130" rx="4" fill="#E1251B"/>
+      <rect x="612" y="55"  width="8" height="90"  rx="4" fill="#FFD100"/>
+      <rect x="630" y="20"  width="8" height="160" rx="4" fill="#E1251B"/>
+      <rect x="648" y="50"  width="8" height="100" rx="4" fill="#FFD100"/>
+      <rect x="666" y="40"  width="8" height="120" rx="4" fill="#E1251B"/>
+    </svg>
+  </div>
+
   <div class="hero-badge">Proposta de Projeto</div>
-  <h1>Quiz <span class="hl">Interativo</span> para<br>Coleta de Leads</h1>
-  <p>Conheça os modelos disponíveis, teste as demos e preencha o formulário inicial para darmos início ao seu projeto.</p>
+  <h1>Quiz <span class="hl">Interativo</span><br><span class="hl-outline">Mix FM</span></h1>
+  <p>Conheça os modelos disponíveis, teste as demos interativas e preencha o briefing inicial para darmos início ao seu projeto.</p>
+  <nav class="hero-cta" aria-label="Navegação rápida">
+    <a href="#demos" class="hero-btn hero-btn-primary">Ver Demos →</a>
+    <a href="#briefing" class="hero-btn hero-btn-ghost">Preencher Briefing</a>
+  </nav>
 </header>
+
+<!-- ═══ STATS BAND — Alcance Mix FM ═══ -->
+<div class="stats-band" aria-label="Números de alcance Mix FM">
+  <div class="stats-band-inner">
+    <div class="stat-item" data-stat="46" data-suffix="+">
+      <span class="stat-num">46+</span>
+      <span class="stat-label">Emissoras</span>
+    </div>
+    <div class="stat-item" data-stat="10" data-suffix="M+">
+      <span class="stat-num">10M+</span>
+      <span class="stat-label">Alcance total</span>
+    </div>
+    <div class="stat-item" data-stat="800" data-suffix="+">
+      <span class="stat-num">800+</span>
+      <span class="stat-label">Cidades</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">1h50</span>
+      <span class="stat-label">Ouvido por dia</span>
+    </div>
+    <div class="stat-item" data-stat="2.5" data-suffix="M+">
+      <span class="stat-num">2.5M+</span>
+      <span class="stat-label">Alcance digital/mês</span>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ ELEMENTO TERRA — Mídia Kit Mix FM 2025 ═══ -->
 <div class="terra-section">
@@ -965,12 +1337,73 @@ select option { background: var(--bg-card); color: var(--text); }
   <div class="container">
     <div class="terra-inner">
 
-      <!-- Left: stacked bold words -->
-      <div class="terra-left-words">
-        <span>FESTIVAIS</span>
-        <span>EVENTOS</span>
-        <span>SHOWS</span>
-        <span>LIVE MKT</span>
+      <!-- Os quatro elementos Mix FM — interativos -->
+      <div class="elementos-list" id="elementosList" role="list" aria-label="Quatro elementos Mix FM">
+
+        <div class="elemento-item" role="listitem" tabindex="0"
+             data-elemento="terra" data-color="#FFD100" aria-expanded="false">
+          <div class="elemento-icon" style="background:#FFD100;color:#000" aria-hidden="true">≡</div>
+          <div class="elemento-body">
+            <span class="elemento-name" style="color:#FFD100">Terra</span>
+            <div class="elemento-tags-wrap">
+              <div class="elemento-tags">
+                <span class="elemento-tag">Festivais</span>
+                <span class="elemento-tag">Eventos</span>
+                <span class="elemento-tag">Shows</span>
+                <span class="elemento-tag">Live Mkt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="elemento-item" role="listitem" tabindex="0"
+             data-elemento="agua" data-color="#005CB9" aria-expanded="false">
+          <div class="elemento-icon" style="background:#005CB9;color:#fff" aria-hidden="true">≈</div>
+          <div class="elemento-body">
+            <span class="elemento-name" style="color:#4d9fef">Água</span>
+            <div class="elemento-tags-wrap">
+              <div class="elemento-tags">
+                <span class="elemento-tag">Redes Sociais</span>
+                <span class="elemento-tag">Podcast</span>
+                <span class="elemento-tag">YouTube</span>
+                <span class="elemento-tag">Website</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="elemento-item" role="listitem" tabindex="0"
+             data-elemento="fogo" data-color="#E1251B" aria-expanded="false">
+          <div class="elemento-icon" style="background:#E1251B;color:#fff;font-size:11px;letter-spacing:-3px" aria-hidden="true">)))</div>
+          <div class="elemento-body">
+            <span class="elemento-name" style="color:#E1251B">Fogo</span>
+            <div class="elemento-tags-wrap">
+              <div class="elemento-tags">
+                <span class="elemento-tag">Experiências</span>
+                <span class="elemento-tag">Energia</span>
+                <span class="elemento-tag">Emoções</span>
+                <span class="elemento-tag">Sentimentos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="elemento-item" role="listitem" tabindex="0"
+             data-elemento="ar" data-color="#c0c0d0" aria-expanded="false">
+          <div class="elemento-icon" style="background:rgba(255,255,255,0.08);color:#eeeef5;border:1.5px solid rgba(255,255,255,0.18);font-size:18px;letter-spacing:0" aria-hidden="true">◎</div>
+          <div class="elemento-body">
+            <span class="elemento-name" style="color:#eeeef5">Ar</span>
+            <div class="elemento-tags-wrap">
+              <div class="elemento-tags">
+                <span class="elemento-tag">Rádio</span>
+                <span class="elemento-tag">Entrevistas</span>
+                <span class="elemento-tag">Programas</span>
+                <span class="elemento-tag">Boletins</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Circular diagram -->
@@ -999,15 +1432,15 @@ select option { background: var(--bg-card); color: var(--text); }
           <path d="M 155.4 364.6 A 148 148 0 0 1 155.4 155.4"
             stroke="rgba(255,255,255,0.22)" stroke-width="1.4" fill="none"/>
 
-          <!-- ══ Satellite NW — ATIVO (amarelo) — Quiz ══ -->
-          <circle cx="123.5" cy="123.5" r="45" fill="#FFD100"/>
+          <!-- ══ Satellite NW — Terra (amarelo) ══ -->
+          <circle id="sat-terra" cx="123.5" cy="123.5" r="45" fill="#FFD100"/>
           <!-- Ícone ≡ (hambúrguer) em preto sobre amarelo -->
           <line x1="107" y1="115"   x2="140" y2="115"   stroke="#000" stroke-width="4"   stroke-linecap="round"/>
           <line x1="107" y1="123.5" x2="140" y2="123.5" stroke="#000" stroke-width="4"   stroke-linecap="round"/>
           <line x1="107" y1="132"   x2="140" y2="132"   stroke="#000" stroke-width="4"   stroke-linecap="round"/>
 
-          <!-- ══ Satellite NE — Analytics / Dashboard ══ -->
-          <circle cx="396.5" cy="123.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- ══ Satellite NE — Água (azul) ══ -->
+          <circle id="sat-agua" cx="396.5" cy="123.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
           <!-- Ícone ≈ (ondas) -->
           <path d="M 380 113   Q 388.5 106 396.5 113   Q 404.5 120 413 113"
             stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
@@ -1016,8 +1449,8 @@ select option { background: var(--bg-card); color: var(--text); }
           <path d="M 380 134   Q 388.5 127 396.5 134   Q 404.5 141 413 134"
             stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-          <!-- ══ Satellite SW — Engajamento / WhatsApp ══ -->
-          <circle cx="123.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- ══ Satellite SW — Fogo (vermelho) ══ -->
+          <circle id="sat-fogo" cx="123.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
           <!-- Ícone ))) vapor/calor -->
           <path d="M 108 382 C 113 373 119 373 113 382 C 107 391 113 400 108 408"
             stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
@@ -1026,8 +1459,8 @@ select option { background: var(--bg-card); color: var(--text); }
           <path d="M 133 382 C 138 373 144 373 138 382 C 132 391 138 400 133 408"
             stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-          <!-- ══ Satellite SE — CRM / Ranking ══ -->
-          <circle cx="396.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+          <!-- ══ Satellite SE — Ar (cinza) ══ -->
+          <circle id="sat-ar" cx="396.5" cy="396.5" r="45" fill="#0f0f0f" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
           <!-- Ícone sinal/radar (arcos concêntricos) -->
           <path d="M 414.5 396.5 A 18 18 0 0 0 378.5 396.5"
             stroke="rgba(255,255,255,0.52)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
@@ -1037,8 +1470,8 @@ select option { background: var(--bg-card); color: var(--text); }
             stroke="rgba(255,255,255,0.40)" stroke-width="2"   fill="none" stroke-linecap="round"/>
           <circle cx="396.5" cy="396.5" r="2.5" fill="rgba(255,255,255,0.60)"/>
 
-          <!-- ══ Centro: rótulo TERRA ══ -->
-          <text x="260" y="228"
+          <!-- ══ Centro: rótulo do elemento ativo ══ -->
+          <text id="svgLabelEl" x="260" y="228"
             text-anchor="middle"
             font-family="Oswald, sans-serif"
             font-size="13"
@@ -1046,12 +1479,14 @@ select option { background: var(--bg-card); color: var(--text); }
             fill="#FFD100"
             font-weight="400">TERRA</text>
 
-          <!-- Ícone casa/montanha -->
-          <polygon points="260,238 250,256 270,256" fill="white" opacity="0.90"/>
-          <rect x="253" y="251" width="14" height="11" fill="white" opacity="0.90"/>
+          <!-- Ícone dinâmico central (casa = default Terra) -->
+          <g id="svgCenterIcon">
+            <polygon points="260,238 250,256 270,256" fill="white" opacity="0.90"/>
+            <rect x="253" y="251" width="14" height="11" fill="white" opacity="0.90"/>
+          </g>
 
-          <!-- AUDIÊNCIA -->
-          <text x="260" y="303"
+          <!-- Palavra grande dinâmica -->
+          <text id="svgLabelSub" x="260" y="303"
             text-anchor="middle"
             font-family="Oswald, sans-serif"
             font-size="38"
@@ -1071,14 +1506,14 @@ select option { background: var(--bg-card); color: var(--text); }
      ═══════════════════════════════════════ -->
 <section id="modelos">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal-left>
       <span class="section-number">Seção 01</span>
       <h2 class="section-title">Sugestões de Modelos de Quiz</h2>
       <p class="section-desc">Cinco formatos reutilizáveis e personalizáveis. Cada modelo pode ser adaptado para diferentes empresas e eventos, alterando apenas o conteúdo e o visual.</p>
     </div>
 
     <div class="model-grid">
-      <div class="model-card">
+      <div class="model-card" data-reveal>
         <span class="mc-icon">🎯</span>
         <h3>Quiz de Perfil (Recomendação)</h3>
         <span class="mc-ideal">Ideal para: concessionárias, imobiliárias, planos de saúde, seguradoras</span>
@@ -1086,7 +1521,7 @@ select option { background: var(--bg-card); color: var(--text); }
         <div class="mc-example">💡 Exemplo: "Descubra qual carro combina com você!" — perguntas sobre estilo de vida, família, prioridades → recomendação de modelo + coleta de dados.</div>
       </div>
 
-      <div class="model-card">
+      <div class="model-card" data-reveal>
         <span class="mc-icon">🧠</span>
         <h3>Quiz de Conhecimento / Trivia</h3>
         <span class="mc-ideal">Ideal para: marcas de bebidas, entretenimento, esportes, tecnologia</span>
@@ -1094,7 +1529,7 @@ select option { background: var(--bg-card); color: var(--text); }
         <div class="mc-example">💡 Exemplo: "Quanto você sabe sobre cerveja artesanal?" — perguntas lúdicas + dados de contato para concorrer a prêmios.</div>
       </div>
 
-      <div class="model-card">
+      <div class="model-card" data-reveal>
         <span class="mc-icon">📊</span>
         <h3>Quiz de Preferências / Pesquisa de Mercado</h3>
         <span class="mc-ideal">Ideal para: empresas lançando produtos, pesquisa de opinião, varejo</span>
@@ -1102,7 +1537,7 @@ select option { background: var(--bg-card); color: var(--text); }
         <div class="mc-example">💡 Exemplo: "Qual sabor você prefere?" — teste de produto com feedback instantâneo + dados demográficos.</div>
       </div>
 
-      <div class="model-card">
+      <div class="model-card" data-reveal>
         <span class="mc-icon">🎰</span>
         <h3>Quiz Gamificado com Roleta / Sorteio</h3>
         <span class="mc-ideal">Ideal para: qualquer segmento que ofereça brindes ou descontos</span>
@@ -1110,7 +1545,7 @@ select option { background: var(--bg-card); color: var(--text); }
         <div class="mc-example">💡 Exemplo: "Responda e gire a roleta!" — alta conversão, engajamento visual.</div>
       </div>
 
-      <div class="model-card">
+      <div class="model-card" data-reveal>
         <span class="mc-icon">💡</span>
         <h3>Quiz de Compatibilidade / Match</h3>
         <span class="mc-ideal">Ideal para: academias, cursos, franquias, apps de serviço</span>
@@ -1138,7 +1573,7 @@ select option { background: var(--bg-card); color: var(--text); }
      ═══════════════════════════════════════ -->
 <section id="demos">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal-left>
       <span class="section-number">Seção 02</span>
       <h2 class="section-title">Demos Interativas</h2>
       <p class="section-desc">Teste cada modelo de quiz com 3 perguntas de exemplo. Clique nas abas para alternar entre os formatos.</p>
@@ -1161,7 +1596,7 @@ select option { background: var(--bg-card); color: var(--text); }
      ═══════════════════════════════════════ -->
 <section id="briefing">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal-left>
       <span class="section-number">Seção 03</span>
       <h2 class="section-title">Formulário de Briefing Inicial</h2>
       <p class="section-desc">Preencha as informações abaixo para darmos início ao MVP do projeto. Não se preocupe se não souber todas as respostas — podemos alinhar depois.</p>
@@ -1170,7 +1605,7 @@ select option { background: var(--bg-card); color: var(--text); }
     <form id="briefingForm" autocomplete="off">
 
       <!-- SEÇÃO A -->
-      <div class="form-card">
+      <div class="form-card" data-reveal>
         <span class="form-section-label">Seção A</span>
         <h3 class="form-section-title">Sobre os Eventos</h3>
 
@@ -1211,7 +1646,7 @@ select option { background: var(--bg-card); color: var(--text); }
       </div>
 
       <!-- SEÇÃO B -->
-      <div class="form-card">
+      <div class="form-card" data-reveal>
         <span class="form-section-label">Seção B</span>
         <h3 class="form-section-title">Sobre as Empresas Parceiras</h3>
 
@@ -1254,7 +1689,7 @@ select option { background: var(--bg-card); color: var(--text); }
       </div>
 
       <!-- SEÇÃO C -->
-      <div class="form-card">
+      <div class="form-card" data-reveal>
         <span class="form-section-label">Seção C</span>
         <h3 class="form-section-title">Sobre o Quiz</h3>
 
@@ -1305,7 +1740,7 @@ select option { background: var(--bg-card); color: var(--text); }
       </div>
 
       <!-- SEÇÃO D -->
-      <div class="form-card">
+      <div class="form-card" data-reveal>
         <span class="form-section-label">Seção D</span>
         <h3 class="form-section-title">Visual e Marca</h3>
 
@@ -1349,7 +1784,7 @@ select option { background: var(--bg-card); color: var(--text); }
       </div>
 
       <!-- SEÇÃO E -->
-      <div class="form-card">
+      <div class="form-card" data-reveal>
         <span class="form-section-label">Seção E</span>
         <h3 class="form-section-title">Expectativas e Orçamento</h3>
 
@@ -1392,13 +1827,13 @@ select option { background: var(--bg-card); color: var(--text); }
      ═══════════════════════════════════════ -->
 <section id="quiz-modelo">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal-left>
       <span class="section-number">Seção 04</span>
       <h2 class="section-title">Monte um Quiz de Exemplo</h2>
       <p class="section-desc">Preencha abaixo como seria um quiz para um cliente específico (real ou fictício). Isso nos ajuda a entender melhor a visão de vocês para o produto.</p>
     </div>
 
-    <div class="form-card">
+    <div class="form-card" data-reveal>
       <span class="form-section-label">Contexto</span>
       <h3 class="form-section-title">Informações do Quiz</h3>
 
@@ -1435,7 +1870,7 @@ select option { background: var(--bg-card); color: var(--text); }
       </div>
     </div>
 
-    <div class="form-card">
+    <div class="form-card" data-reveal>
       <span class="form-section-label">Perguntas</span>
       <h3 class="form-section-title">Monte as perguntas do quiz</h3>
       <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Adicione as perguntas que esse quiz teria. Inclua as opções de resposta para cada uma.</p>
@@ -1444,7 +1879,7 @@ select option { background: var(--bg-card); color: var(--text); }
       <button class="btn-add-q" type="button" onclick="addBuilderQuestion()">+ Adicionar Pergunta</button>
     </div>
 
-    <div class="form-card">
+    <div class="form-card" data-reveal>
       <span class="form-section-label">Resultado</span>
       <h3 class="form-section-title">O que o participante vê no final?</h3>
 
@@ -2094,6 +2529,283 @@ async function submitAll() {
     btn2.disabled = false;
   }
 }
+
+// ══════════════════════════════════════════
+// MOTION.DEV — SCROLL ANIMATIONS
+// ══════════════════════════════════════════
+(function initMotion() {
+  // Respect prefers-reduced-motion
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
+
+  const M = window.Motion;
+  if (!M) return;
+
+  const { animate, inView, stagger } = M;
+
+  /* ── Hero entrance ── */
+  animate('.hero-badge',  { opacity: [0, 1], y: [20, 0] }, { duration: 0.6, delay: 0.1, easing: [0.25, 0.46, 0.45, 0.94] });
+  animate('.hero h1',     { opacity: [0, 1], y: [30, 0] }, { duration: 0.7, delay: 0.25, easing: [0.25, 0.46, 0.45, 0.94] });
+  animate('.hero p',      { opacity: [0, 1], y: [20, 0] }, { duration: 0.6, delay: 0.45, easing: [0.25, 0.46, 0.45, 0.94] });
+  animate('.hero-cta',    { opacity: [0, 1], y: [16, 0] }, { duration: 0.6, delay: 0.60, easing: [0.25, 0.46, 0.45, 0.94] });
+
+  /* ── Animated sound-wave bars in hero ── */
+  const bars = document.querySelectorAll('.hero-wave rect');
+  bars.forEach((bar, i) => {
+    animate(bar,
+      { scaleY: [0.4, 1.0, 0.6, 1.0, 0.4] },
+      { duration: 1.4 + Math.random() * 1.2, repeat: Infinity, delay: i * 0.04, easing: 'ease-in-out' }
+    );
+  });
+
+  /* ── Stats band — animated counting numbers ── */
+  inView('.stats-band', () => {
+    document.querySelectorAll('.stat-item[data-stat]').forEach((item, idx) => {
+      const numEl = item.querySelector('.stat-num');
+      const target = parseFloat(item.dataset.stat);
+      const suffix = item.dataset.suffix || '';
+      const isFloat = !Number.isInteger(target);
+
+      // Motion value animation: animate(from, to, options)
+      // Falls back gracefully if API not available
+      try {
+        animate(0, target, {
+          duration: 1.8,
+          delay: idx * 0.12,
+          ease: [0.16, 1, 0.3, 1],
+          onUpdate(v) {
+            numEl.textContent = (isFloat ? v.toFixed(1) : Math.round(v)) + suffix;
+          },
+          onComplete() {
+            numEl.textContent = (isFloat ? target.toFixed(1) : target) + suffix;
+          }
+        });
+      } catch (e) {
+        // Fallback: simple CSS counter via requestAnimationFrame
+        const start = performance.now();
+        const dur = 1800 + idx * 120;
+        function tick(now) {
+          const t = Math.min((now - start) / dur, 1);
+          const ease = 1 - Math.pow(1 - t, 4);
+          const v = target * ease;
+          numEl.textContent = (isFloat ? v.toFixed(1) : Math.round(v)) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        setTimeout(() => requestAnimationFrame(tick), idx * 120);
+      }
+    });
+  }, { amount: 0.4 });
+
+  /* ── Terra diagram — satellite pulse + ring rotation ── */
+  inView('.terra-section', () => {
+    const terraSvg = document.querySelector('.terra-diagram-wrap svg');
+    if (!terraSvg) return;
+
+    // Fade in the whole SVG
+    animate(terraSvg, { opacity: [0, 1] }, { duration: 0.8 });
+
+    // Pulse the active (yellow) satellite — index 2 (0=main fill, 1=main stroke, 2=NW yellow)
+    const activeSat = terraSvg.querySelectorAll('circle')[2];
+    if (activeSat) {
+      animate(activeSat,
+        { scale: [1, 1.06, 1] },
+        { duration: 2.5, repeat: Infinity, easing: 'ease-in-out' }
+      );
+    }
+
+    // Fade the element items staggered
+    animate('.elemento-item',
+      { opacity: [0, 1], x: [-20, 0] },
+      { duration: 0.5, delay: stagger(0.1, { start: 0.3 }), easing: [0.25, 0.46, 0.45, 0.94] }
+    );
+  }, { amount: 0.3 });
+
+  /* ── Scroll reveal: data-reveal (fade up) ── */
+  document.querySelectorAll('[data-reveal]').forEach((el, idx) => {
+    inView(el, () => {
+      animate(el,
+        { opacity: [0, 1], y: [28, 0] },
+        { duration: 0.55, delay: (idx % 5) * 0.08, easing: [0.25, 0.46, 0.45, 0.94] }
+      );
+    }, { amount: 0.15 });
+  });
+
+  /* ── Scroll reveal: data-reveal-left (slide from left) ── */
+  document.querySelectorAll('[data-reveal-left]').forEach(el => {
+    inView(el, () => {
+      animate(el,
+        { opacity: [0, 1], x: [-24, 0] },
+        { duration: 0.55, easing: [0.25, 0.46, 0.45, 0.94] }
+      );
+    }, { amount: 0.2 });
+  });
+
+  /* ── Nav scroll-progress accent line ── */
+  const nav = document.querySelector('.top-nav');
+  if (nav) {
+    const progressLine = document.createElement('div');
+    progressLine.style.cssText = `
+      position: absolute; bottom: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, #E1251B, #FF6B00, #FFD100);
+      width: 0%; transition: width 0.1s linear; z-index: 10;
+    `;
+    nav.appendChild(progressLine);
+
+    window.addEventListener('scroll', () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docH > 0 ? (window.scrollY / docH * 100).toFixed(1) : 0;
+      progressLine.style.width = pct + '%';
+    }, { passive: true });
+  }
+
+  /* ── Quiz tab transition ── */
+  const origLoad = qe.load.bind(qe);
+  qe.load = function(id) {
+    const stage = document.getElementById('quizStage');
+    if (stage && stage.children.length) {
+      animate(stage, { opacity: [1, 0], y: [0, -8] }, { duration: 0.18 }).then(() => {
+        origLoad(id);
+        animate(stage, { opacity: [0, 1], y: [8, 0] }, { duration: 0.25, easing: [0.25, 0.46, 0.45, 0.94] });
+      });
+    } else {
+      origLoad(id);
+    }
+  };
+
+  // Re-init first quiz with animation
+  setTimeout(() => {
+    const stage = document.getElementById('quizStage');
+    if (stage) animate(stage, { opacity: [0, 1], y: [12, 0] }, { duration: 0.4, easing: [0.25, 0.46, 0.45, 0.94] });
+  }, 100);
+
+})();
+
+// ══════════════════════════════════════════
+// ELEMENTOS — quatro elementos Mix FM
+// Interação hover/focus/click com o SVG
+// ══════════════════════════════════════════
+(function initElementos() {
+  const list = document.getElementById('elementosList');
+  if (!list) return;
+
+  // SVG references
+  const svgLabelEl  = document.getElementById('svgLabelEl');
+  const svgLabelSub = document.getElementById('svgLabelSub');
+  const svgIcon     = document.getElementById('svgCenterIcon');
+
+  // Default satellite fills
+  const defaultFill = { terra: '#FFD100', agua: '#0f0f0f', fogo: '#0f0f0f', ar: '#0f0f0f' };
+
+  // Per-element data
+  const meta = {
+    terra: { sub: 'AUDIÊNCIA',    icon: 'house' },
+    agua:  { sub: 'ALCANCE',      icon: 'wave'  },
+    fogo:  { sub: 'ENERGIA',      icon: 'flame' },
+    ar:    { sub: 'BROADCAST',    icon: 'radio' },
+  };
+
+  // SVG center icons per element (replaces polygon+rect)
+  const icons = {
+    house: `<polygon points="260,238 250,256 270,256" fill="white" opacity="0.90"/>
+            <rect x="253" y="251" width="14" height="11" fill="white" opacity="0.90"/>`,
+    wave:  `<path d="M235 248 Q243 238 252 248 Q260 258 269 248 Q277 238 285 248"
+              stroke="white" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
+            <path d="M235 258 Q243 248 252 258 Q260 268 269 258 Q277 248 285 258"
+              stroke="white" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>`,
+    flame: `<path d="M260 240 C255 246 248 250 250 258 C252 264 258 267 260 267
+              C262 267 268 264 270 258 C272 250 265 246 260 240Z"
+              fill="white" opacity="0.9"/>
+            <path d="M260 255 C258 258 257 262 260 263 C263 262 262 258 260 255Z"
+              fill="#E1251B" opacity="0.8"/>`,
+    radio: `<path d="M278 248 A18 18 0 0 0 242 248" stroke="white" stroke-width="2.5"
+              fill="none" stroke-linecap="round" opacity="0.9"/>
+            <path d="M272 254 A12 12 0 0 0 248 254" stroke="white" stroke-width="2"
+              fill="none" stroke-linecap="round" opacity="0.7"/>
+            <path d="M266 260 A6 6 0 0 0 254 260" stroke="white" stroke-width="2"
+              fill="none" stroke-linecap="round" opacity="0.5"/>
+            <circle cx="260" cy="264" r="3" fill="white" opacity="0.9"/>`,
+  };
+
+  let activeItem = null;
+
+  function activate(item) {
+    if (activeItem === item) return;
+    if (activeItem) deactivate(activeItem, false);
+    activeItem = item;
+
+    const id    = item.dataset.elemento;
+    const color = item.dataset.color;
+    const sat   = document.getElementById('sat-' + id);
+
+    // Highlight this satellite
+    if (sat) {
+      sat.style.fill   = color;
+      sat.style.filter = `drop-shadow(0 0 12px ${color}88)`;
+    }
+
+    // Dim others
+    ['terra','agua','fogo','ar'].forEach(k => {
+      if (k === id) return;
+      const s = document.getElementById('sat-' + k);
+      if (s) s.style.opacity = '0.2';
+    });
+
+    // Update center label + color
+    if (svgLabelEl) {
+      svgLabelEl.textContent = id.toUpperCase();
+      svgLabelEl.style.fill  = color;
+    }
+    if (svgLabelSub && meta[id]) svgLabelSub.textContent = meta[id].sub;
+    if (svgIcon && meta[id])    svgIcon.innerHTML = icons[meta[id].icon] || '';
+
+    item.setAttribute('aria-expanded', 'true');
+  }
+
+  function deactivate(item, clearActive = true) {
+    if (clearActive) activeItem = null;
+    const id = item.dataset.elemento;
+
+    // Restore satellites
+    ['terra','agua','fogo','ar'].forEach(k => {
+      const s = document.getElementById('sat-' + k);
+      if (!s) return;
+      s.style.fill    = defaultFill[k];
+      s.style.filter  = 'none';
+      s.style.opacity = '1';
+    });
+
+    // Restore center
+    if (svgLabelEl)  { svgLabelEl.textContent = 'TERRA'; svgLabelEl.style.fill = '#FFD100'; }
+    if (svgLabelSub)   svgLabelSub.textContent = 'AUDIÊNCIA';
+    if (svgIcon)       svgIcon.innerHTML = icons.house;
+
+    item.setAttribute('aria-expanded', 'false');
+  }
+
+  list.querySelectorAll('.elemento-item').forEach(item => {
+    // Mouse
+    item.addEventListener('mouseenter', () => activate(item));
+    item.addEventListener('mouseleave', () => deactivate(item));
+
+    // Keyboard (focus reveals tags via CSS, also drives SVG)
+    item.addEventListener('focus',  () => activate(item));
+    item.addEventListener('blur',   () => deactivate(item));
+
+    // Touch: toggle on tap
+    item.addEventListener('click', () => {
+      if (item.getAttribute('aria-expanded') === 'true') deactivate(item);
+      else activate(item);
+    });
+
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (item.getAttribute('aria-expanded') === 'true') deactivate(item);
+        else activate(item);
+      }
+    });
+  });
+})();
 </script>
 </body>
 </html>
